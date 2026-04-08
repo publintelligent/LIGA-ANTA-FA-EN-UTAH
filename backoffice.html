@@ -937,13 +937,27 @@ async function saveConf(){
 
   await DB.from('config').upsert({key:'jornada_actual',value:jornadaNum});
   await DB.from('config').upsert({key:'campos_opciones',value:cfgCamposList});
-  if(newPw)await DB.from('config').upsert({key:'admin_password',value:newPw});
+  if(newPw) await DB.from('config').upsert({key:'admin_password',value:newPw});
 
-  // Sync divisiones
-  for(let i=0;i<cfgDivsList.length;i++){
-    await DB.from('divisiones').upsert({nombre:cfgDivsList[i],orden:i+1},{onConflict:'nombre'});
+  // ── SYNC DIVISIONES: borrar las que ya no están, agregar/actualizar las nuevas ──
+  // 1. Obtener divisiones actuales en Supabase
+  const {data:divsActuales} = await DB.from('divisiones').select('nombre');
+  const nombresActuales = (divsActuales||[]).map(d=>d.nombre);
+
+  // 2. Borrar las que ya no están en la lista nueva
+  const aBorrar = nombresActuales.filter(n => !cfgDivsList.includes(n));
+  for(const nombre of aBorrar){
+    await DB.from('divisiones').delete().eq('nombre', nombre);
   }
-  toast('✅ Configuración guardada');await loadAll();
+
+  // 3. Insertar o actualizar las que están en la lista nueva
+  for(let i=0;i<cfgDivsList.length;i++){
+    await DB.from('divisiones').upsert({nombre:cfgDivsList[i], orden:i+1}, {onConflict:'nombre'});
+  }
+
+  toast('✅ Configuración guardada');
+  await loadAll();
+  rDash();
 }
 
 async function resetAll(){
