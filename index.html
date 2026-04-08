@@ -9,159 +9,155 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root {
-    --azul: #1a3a6e;
-    --azul-mid: #2a5298;
-    --azul-claro: #4a7fd4;
-    --azul-link: #3a6abf;
-    --blanco: #ffffff;
-    --fondo: #f4f6fa;
-    --borde: #dde3ef;
-    --borde2: #c8d0e4;
-    --rowalt: #f0f3f9;
-    --texto: #1a1a2e;
-    --dim: #6a7a9a;
-    --rojo: #c0392b;
-    --verde: #1a7a3a;
-    --dorado: #c8a020;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { font-family:'Barlow',sans-serif; background:var(--blanco); color:var(--texto); min-height:100vh; max-width:430px; margin:0 auto; overflow-x:hidden; }
+:root{--azul:#1a3a6e;--azul-mid:#2a5298;--azul-claro:#4a7fd4;--azul-link:#3a6abf;--blanco:#fff;--fondo:#f4f6fa;--borde:#dde3ef;--borde2:#c8d0e4;--rowalt:#f0f3f9;--texto:#1a1a2e;--dim:#6a7a9a;--rojo:#c0392b;--verde:#1a7a3a;--dorado:#c8a020;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Barlow',sans-serif;background:var(--blanco);color:var(--texto);min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden;}
 
-  /* LOADING */
-  .loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,.92); z-index:500; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
-  .loading-overlay.hidden { display:none; }
-  .spinner { width:40px; height:40px; border:3px solid var(--borde); border-top-color:var(--azul); border-radius:50%; animation:spin .7s linear infinite; }
-  @keyframes spin { to { transform:rotate(360deg); } }
-  .load-txt { font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; color:var(--dim); letter-spacing:1px; }
+.load-ov{position:fixed;inset:0;background:rgba(255,255,255,.95);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.load-ov.hidden{display:none;}
+.spinner{width:40px;height:40px;border:3px solid var(--borde);border-top-color:var(--azul);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.load-txt{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--dim);letter-spacing:1px;}
 
-  /* NO CONFIG BANNER */
-  .no-config { background:var(--rojo); color:#fff; padding:10px 16px; font-size:12px; font-weight:600; text-align:center; display:none; }
+/* SYNC INDICATOR */
+.sync-bar{background:var(--azul);color:#fff;padding:4px 12px;font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;text-align:center;display:none;}
+.sync-bar.show{display:block;animation:fadeout 1.5s forwards 1s;}
+@keyframes fadeout{to{opacity:0;height:0;padding:0;}}
 
-  .header { background:var(--azul); padding:14px 18px 12px; position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(26,58,110,.25); }
-  .logo-wrap { display:flex; align-items:center; gap:10px; }
-  .logo-txt .sup { font-size:9px; letter-spacing:3px; color:rgba(255,255,255,.65); font-family:'Barlow Condensed',sans-serif; font-weight:700; text-transform:uppercase; }
-  .logo-txt .main { font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:900; color:#fff; letter-spacing:3px; line-height:1; }
-  .logo-ball { font-size:28px; }
-  .logo-img { height:38px; width:auto; object-fit:contain; display:none; }
-  .hdr-right { text-align:right; }
-  .hdr-right .lbl { font-size:9px; letter-spacing:2px; color:rgba(255,255,255,.55); font-family:'Barlow Condensed',sans-serif; font-weight:600; text-transform:uppercase; }
-  .hdr-right .val { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:900; color:rgba(255,255,255,.9); line-height:1; }
+.header{background:var(--azul);padding:12px 16px 10px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(26,58,110,.25);}
+.logo-wrap{display:flex;align-items:center;gap:10px;}
+.logo-img{height:36px;width:auto;object-fit:contain;display:none;}
+.logo-ball{font-size:26px;}
+.logo-txt .sup{font-size:9px;letter-spacing:3px;color:rgba(255,255,255,.65);font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;}
+.logo-txt .main{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#fff;letter-spacing:3px;line-height:1;}
+.hdr-right{text-align:right;}
+.hdr-right .lbl{font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.55);font-family:'Barlow Condensed',sans-serif;font-weight:600;text-transform:uppercase;}
+.hdr-right .val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:rgba(255,255,255,.9);line-height:1;}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#22c55e;margin-left:5px;animation:ldot 2s infinite;}
+@keyframes ldot{0%,100%{opacity:1}50%{opacity:.3}}
 
-  .nav { display:flex; background:var(--azul-mid); overflow-x:auto; scrollbar-width:none; box-shadow:0 2px 4px rgba(0,0,0,.15); }
-  .nav::-webkit-scrollbar { display:none; }
-  .nb { flex:0 0 auto; padding:11px 14px; font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:rgba(255,255,255,.65); background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; transition:all .2s; white-space:nowrap; }
-  .nb.active { color:#fff; border-bottom-color:rgba(255,255,255,.9); }
+.nav{display:flex;background:var(--azul-mid);overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 4px rgba(0,0,0,.15);}
+.nav::-webkit-scrollbar{display:none;}
+.nb{flex:0 0 auto;padding:10px 13px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:rgba(255,255,255,.65);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nb.active{color:#fff;border-bottom-color:rgba(255,255,255,.9);}
 
-  .sec { display:none; padding:16px; animation:fi .2s ease; }
-  .sec.active { display:block; }
-  @keyframes fi { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
+.sec{display:none;padding:14px;animation:fi .2s ease;}
+.sec.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 
-  .stitle { font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--azul); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
-  .stitle::after { content:''; flex:1; height:2px; background:var(--borde); }
+.stitle{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--azul);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.stitle::after{content:'';flex:1;height:2px;background:var(--borde);}
 
-  .pdt-card { background:var(--fondo); border:1px solid var(--borde); border-radius:12px; padding:18px; margin-bottom:16px; border-left:4px solid var(--azul); }
-  .pdt-liga { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:900; color:var(--azul); letter-spacing:2px; margin-bottom:2px; }
-  .pdt-sub { font-size:12px; color:var(--dim); margin-bottom:14px; }
-  .ci-list { display:flex; flex-direction:column; gap:8px; }
-  .ci { display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--borde); border-radius:8px; padding:10px 14px; }
-  .ci-ico { font-size:16px; width:22px; text-align:center; }
-  .ci-lbl { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dim); font-weight:600; }
-  .ci-val { font-size:14px; font-weight:600; color:var(--texto); }
-  .ci-val a { color:var(--azul-link); text-decoration:none; font-weight:700; }
+/* INICIO */
+.pdt-card{background:var(--fondo);border:1px solid var(--borde);border-radius:12px;padding:16px;margin-bottom:14px;border-left:4px solid var(--azul);}
+.pdt-liga{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--azul);letter-spacing:2px;margin-bottom:2px;display:flex;align-items:center;gap:10px;}
+.pdt-liga img{height:32px;width:auto;object-fit:contain;}
+.pdt-sub{font-size:12px;color:var(--dim);margin-bottom:12px;}
+.ci-list{display:flex;flex-direction:column;gap:7px;}
+.ci{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--borde);border-radius:8px;padding:9px 12px;}
+.ci-ico{font-size:15px;width:20px;text-align:center;}
+.ci-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);font-weight:600;}
+.ci-val{font-size:13px;font-weight:600;color:var(--texto);}
+.ci-val a{color:var(--azul-link);text-decoration:none;font-weight:700;}
 
-  .campos-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
-  .campo-card { background:#fff; border:1px solid var(--borde); border-radius:10px; padding:14px 12px; text-align:center; border-top:3px solid var(--azul); }
-  .campo-tipo { font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--azul); margin-bottom:6px; }
-  .campo-dir { font-size:11px; color:var(--dim); line-height:1.5; margin-bottom:10px; }
-  .campo-link { display:inline-block; background:var(--azul); color:#fff; text-decoration:none; font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; padding:6px 14px; border-radius:6px; }
+.campos-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.campo-card{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:12px;text-align:center;border-top:3px solid var(--azul);}
+.campo-tipo{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--azul);margin-bottom:5px;}
+.campo-dir{font-size:11px;color:var(--dim);line-height:1.5;margin-bottom:8px;}
+.campo-link{display:inline-block;background:var(--azul);color:#fff;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;padding:5px 12px;border-radius:5px;}
 
-  .cat-block { margin-bottom:24px; }
-  .cat-title { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:900; color:var(--azul); text-align:center; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; padding:8px; border-bottom:2px solid var(--azul); }
-  .hor-table-wrap { border:1px solid var(--borde); border-radius:8px; overflow:hidden; margin-bottom:14px; }
-  .hor-sub-lbl { background:var(--fondo); padding:8px 14px; font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--azul-mid); border-bottom:1px solid var(--borde); }
-  table.hor { width:100%; border-collapse:collapse; }
-  table.hor thead tr { background:var(--azul); }
-  table.hor thead th { padding:9px 10px; font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#fff; text-align:left; }
-  table.hor tbody tr { border-bottom:1px solid var(--borde); transition:background .1s; }
-  table.hor tbody tr:last-child { border-bottom:none; }
-  table.hor tbody tr:hover { background:var(--fondo); }
-  table.hor tbody td { padding:9px 10px; font-size:12px; }
-  table.hor tbody td.eq-win { font-weight:800; color:var(--verde); }
-  .pend-badge { background:var(--fondo); color:var(--dim); font-size:10px; padding:2px 6px; border-radius:4px; font-family:'Barlow Condensed',sans-serif; font-weight:700; letter-spacing:1px; }
+/* HORARIO */
+.cat-block{margin-bottom:20px;}
+.cat-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:var(--azul);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding:6px;border-bottom:2px solid var(--azul);}
+.hor-table-wrap{border:1px solid var(--borde);border-radius:8px;overflow:hidden;margin-bottom:12px;}
+.hor-sub-lbl{background:var(--fondo);padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--azul-mid);border-bottom:1px solid var(--borde);}
+table.hor{width:100%;border-collapse:collapse;}
+table.hor thead tr{background:var(--azul);}
+table.hor thead th{padding:8px 9px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;text-align:left;}
+table.hor tbody tr{border-bottom:1px solid var(--borde);}
+table.hor tbody tr:last-child{border-bottom:none;}
+table.hor tbody tr:nth-child(even){background:var(--rowalt);}
+table.hor tbody td{padding:8px 9px;font-size:12px;}
+table.hor tbody td.eq-w{font-weight:800;color:var(--verde);}
+.pend{background:var(--fondo);color:var(--dim);font-size:10px;padding:2px 6px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;}
+.res-score{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:15px;color:var(--azul);}
 
-  .jorn-sel { display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; scrollbar-width:none; }
-  .jorn-sel::-webkit-scrollbar { display:none; }
-  .jbtn { flex:0 0 auto; background:#fff; border:1px solid var(--borde); color:var(--dim); font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; padding:6px 12px; border-radius:6px; cursor:pointer; transition:all .15s; white-space:nowrap; }
-  .jbtn.active { background:var(--azul); color:#fff; border-color:var(--azul); }
+.jorn-sel{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;}
+.jorn-sel::-webkit-scrollbar{display:none;}
+.jbtn{flex:0 0 auto;background:#fff;border:1px solid var(--borde);color:var(--dim);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;padding:5px 11px;border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.jbtn.active{background:var(--azul);color:#fff;border-color:var(--azul);}
 
-  .chips { display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; scrollbar-width:none; }
-  .chips::-webkit-scrollbar { display:none; }
-  .chip { flex:0 0 auto; background:#fff; border:1px solid var(--borde); color:var(--dim); font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; padding:5px 12px; border-radius:20px; cursor:pointer; transition:all .15s; white-space:nowrap; }
-  .chip.active { background:var(--azul); color:#fff; border-color:var(--azul); }
+.chips{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{flex:0 0 auto;background:#fff;border:1px solid var(--borde);color:var(--dim);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.chip.active{background:var(--azul);color:#fff;border-color:var(--azul);}
 
-  .pos-table-wrap { border:1px solid var(--borde); border-radius:8px; overflow:hidden; margin-bottom:20px; }
-  .pos-cat-title { background:var(--azul); padding:10px 14px; font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:#fff; }
-  table.pos { width:100%; border-collapse:collapse; }
-  table.pos thead tr { background:var(--rowalt); }
-  table.pos thead th { padding:8px 10px; font-family:'Barlow Condensed',sans-serif; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--azul); border-bottom:2px solid var(--borde); text-align:center; }
-  table.pos thead th.lt { text-align:left; }
-  table.pos tbody tr { border-bottom:1px solid var(--borde); }
-  table.pos tbody tr:last-child { border-bottom:none; }
-  table.pos tbody tr.top1 { background:linear-gradient(90deg,rgba(26,58,110,.07) 0%,transparent 70%); }
-  table.pos tbody td { padding:9px 10px; font-size:12px; text-align:center; }
-  table.pos tbody td.lt { text-align:left; font-weight:600; }
-  table.pos tbody td.pos-num { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:14px; color:var(--dim); }
-  table.pos tbody td.pts-val { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:16px; color:var(--azul); }
-  .gold-pos { display:inline-block; width:20px; height:20px; border-radius:50%; background:var(--dorado); color:#fff; font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:11px; line-height:20px; text-align:center; }
+/* POSICIONES */
+.pos-table-wrap{border:1px solid var(--borde);border-radius:8px;overflow:hidden;margin-bottom:18px;}
+.pos-cat-title{background:var(--azul);padding:9px 12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;display:flex;align-items:center;gap:8px;}
+.pos-cat-title img{height:20px;width:auto;object-fit:contain;}
+table.pos{width:100%;border-collapse:collapse;}
+table.pos thead tr{background:var(--rowalt);}
+table.pos thead th{padding:7px 9px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--azul);border-bottom:2px solid var(--borde);text-align:center;}
+table.pos thead th.lt{text-align:left;}
+table.pos tbody tr{border-bottom:1px solid var(--borde);}
+table.pos tbody tr:last-child{border-bottom:none;}
+table.pos tbody tr.top1{background:linear-gradient(90deg,rgba(26,58,110,.07) 0%,transparent 70%);}
+table.pos tbody td{padding:8px 9px;font-size:12px;text-align:center;}
+table.pos tbody td.lt{text-align:left;font-weight:600;}
+table.pos tbody td.pos-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;color:var(--dim);}
+table.pos tbody td.pts-v{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:var(--azul);}
+.gold-pos{display:inline-block;width:19px;height:19px;border-radius:50%;background:var(--dorado);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:11px;line-height:19px;text-align:center;}
+.eq-av{width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:900;color:#fff;overflow:hidden;vertical-align:middle;margin-right:4px;}
+.eq-av img{width:100%;height:100%;object-fit:cover;}
 
-  .cc { background:#fff; border:1px solid var(--borde); border-radius:10px; padding:14px; margin-bottom:10px; display:flex; align-items:center; gap:12px; border-left:3px solid var(--azul); }
-  .cc-ico { width:44px; height:44px; background:var(--fondo); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; border:1px solid var(--borde); }
-  .cc-nom { font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:800; color:var(--azul); }
-  .cc-dir { font-size:11px; color:var(--dim); margin-top:2px; }
-  .cc-link { margin-left:auto; background:var(--azul); color:#fff; border-radius:7px; padding:8px 12px; font-size:15px; text-decoration:none; flex-shrink:0; }
+/* CANCHAS */
+.cc{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:13px;margin-bottom:9px;display:flex;align-items:center;gap:12px;border-left:3px solid var(--azul);}
+.cc-ico{width:42px;height:42px;background:var(--fondo);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid var(--borde);}
+.cc-nom{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:var(--azul);}
+.cc-dir{font-size:11px;color:var(--dim);margin-top:2px;}
+.cc-link{margin-left:auto;background:var(--azul);color:#fff;border-radius:7px;padding:8px 11px;font-size:14px;text-decoration:none;flex-shrink:0;}
 
-  .fg { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .fi { border-radius:8px; overflow:hidden; background:var(--fondo); aspect-ratio:4/3; position:relative; border:1px solid var(--borde); cursor:pointer; }
-  .fi img { width:100%; height:100%; object-fit:cover; }
-  .fi-ph { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:var(--dim); font-size:24px; }
-  .fi-lbl { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(26,58,110,.85)); padding:14px 8px 7px; font-size:11px; font-family:'Barlow Condensed',sans-serif; font-weight:700; color:#fff; }
-  .fi.g { grid-column:span 2; aspect-ratio:16/9; }
+/* FOTOS */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.fi{border-radius:8px;overflow:hidden;background:var(--fondo);aspect-ratio:4/3;position:relative;border:1px solid var(--borde);cursor:pointer;}
+.fi img{width:100%;height:100%;object-fit:cover;}
+.fi-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--dim);font-size:22px;}
+.fi-lbl{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(26,58,110,.85));padding:14px 8px 7px;font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#fff;}
+.fi.g{grid-column:span 2;aspect-ratio:16/9;}
 
-  .mo { display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:200; align-items:center; justify-content:center; padding:20px; }
-  .mo.open { display:flex; }
-  .mo img { max-width:100%; max-height:80vh; border-radius:10px; object-fit:contain; }
-  .mx { position:absolute; top:16px; right:16px; background:rgba(255,255,255,.2); border:none; color:#fff; font-size:20px; width:38px; height:38px; border-radius:50%; cursor:pointer; }
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.mo.open{display:flex;}
+.mo img{max-width:100%;max-height:80vh;border-radius:10px;object-fit:contain;}
+.mx{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:20px;width:38px;height:38px;border-radius:50%;cursor:pointer;}
 
-  .empty { text-align:center; padding:40px 20px; color:var(--dim); }
-  .empty .big { font-size:40px; margin-bottom:10px; }
+.empty{text-align:center;padding:36px 20px;color:var(--dim);}
+.empty .big{font-size:38px;margin-bottom:8px;}
 
-  /* REALTIME DOT */
-  .rt-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:#22c55e; margin-left:6px; animation:rtpulse 2s infinite; }
-  @keyframes rtpulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+/* REFRESH BTN */
+.refresh-btn{position:fixed;bottom:20px;right:16px;background:var(--azul);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;box-shadow:0 3px 12px rgba(26,58,110,.4);z-index:90;display:flex;align-items:center;justify-content:center;transition:transform .2s;}
+.refresh-btn:active{transform:scale(.9);}
+.refresh-btn.spinning{animation:spin .7s linear infinite;}
 </style>
 </head>
 <body>
 
-<!-- ⚠️ CONFIGURACIÓN — reemplaza con tus credenciales de Supabase -->
 <script>
-  const SUPABASE_URL = 'https://bkppbfmolvgubhoilggy.supabase.co';       // ej: https://abcdef.supabase.co
-  const SUPABASE_ANON_KEY = 'sb_publishable_bRj5okEQwcbYsINR3auVwQ_sHCpvh2H';       // clave anon/public de Supabase
-  const CONFIG_OK = true;
+const SUPABASE_URL = 'https://bkppbfmolvgubhoilggy.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_bRj5okEQwcbYsINR3auVwQ_sHCpvh2H';
 </script>
 
-<div class="loading-overlay" id="loading">
+<div class="load-ov" id="load-ov">
   <div class="spinner"></div>
   <div class="load-txt">Cargando Liga ANTA...</div>
 </div>
 
-<div class="no-config" id="no-config-banner">
-  ⚠️ App no configurada — abre el backoffice y configura las credenciales de Supabase
-</div>
+<div class="sync-bar" id="sync-bar">✅ Datos actualizados</div>
 
 <div class="header">
   <div class="logo-wrap">
-    <img id="hdr-logo-img" class="logo-img" src="" alt="Logo">
+    <img id="hdr-logo" class="logo-img" src="" alt="Logo" onerror="this.style.display='none';document.getElementById('hdr-ball').style.display='block'">
     <div id="hdr-ball" class="logo-ball">⚽</div>
     <div class="logo-txt">
       <div class="sup">Liga</div>
@@ -170,7 +166,7 @@
   </div>
   <div class="hdr-right">
     <div class="lbl">Temporada</div>
-    <div class="val" id="hdr-temp">2026<span class="rt-dot" id="rt-dot" style="display:none"></span></div>
+    <div class="val" id="hdr-temp">2026<span class="live-dot"></span></div>
   </div>
 </div>
 
@@ -182,53 +178,55 @@
   <button class="nb" onclick="setTab('canchas',this)">📍 Canchas</button>
 </nav>
 
+<!-- INICIO -->
 <div class="sec active" id="tab-inicio">
   <div class="pdt-card">
-    <div class="pdt-liga" id="ini-liga">⚽ Liga ANTA</div>
+    <div class="pdt-liga">
+      <img id="ini-logo" src="" style="display:none" onerror="this.style.display='none'">
+      <span id="ini-liga-txt">⚽ Liga ANTA</span>
+    </div>
     <div class="pdt-sub" id="ini-sub">Asociación Nacional de Torneos Americanos · Utah 2026</div>
     <div class="ci-list">
-      <div class="ci">
-        <div class="ci-ico">📞</div>
-        <div><div class="ci-lbl">Contacto / PDT</div><div class="ci-val"><a id="ini-tel" href="tel:8017067199"><span id="ini-tel-v">801-706-7199</span></a></div></div>
-      </div>
-      <div class="ci">
-        <div class="ci-ico">🌐</div>
-        <div><div class="ci-lbl">Sitio Web</div><div class="ci-val"><a id="ini-web" href="https://ligaanta.com" target="_blank"><span id="ini-web-v">ligaanta.com</span></a></div></div>
-      </div>
+      <div class="ci"><div class="ci-ico">📞</div><div><div class="ci-lbl">Contacto / PDT</div><div class="ci-val"><a id="ini-tel" href="tel:8017067199">801-706-7199</a></div></div></div>
+      <div class="ci"><div class="ci-ico">🌐</div><div><div class="ci-lbl">Sitio Web</div><div class="ci-val"><a id="ini-web" href="https://ligaanta.com" target="_blank">ligaanta.com</a></div></div></div>
     </div>
   </div>
   <div class="stitle">📍 Campos de Juego</div>
   <div class="campos-grid">
     <div class="campo-card">
       <div class="campo-tipo">🏟️ Indoor</div>
-      <div class="campo-dir" id="ini-indoor-dir">3570 Galaxy Park Pl,<br>West Jordan, UT 84088</div>
-      <a class="campo-link" id="ini-indoor-map" href="#" target="_blank">Ver Mapa</a>
+      <div class="campo-dir" id="ini-ind-dir">3570 Galaxy Park Pl,<br>West Jordan, UT 84088</div>
+      <a class="campo-link" id="ini-ind-map" href="https://maps.google.com/?q=3570+Galaxy+Park+Pl+West+Jordan+UT+84088" target="_blank">Ver Mapa</a>
     </div>
     <div class="campo-card">
       <div class="campo-tipo">⛳ Outdoor</div>
-      <div class="campo-dir" id="ini-outdoor-dir">5415 W 3100 S,<br>West Valley City, UT 84120</div>
-      <a class="campo-link" id="ini-outdoor-map" href="#" target="_blank">Ver Mapa</a>
+      <div class="campo-dir" id="ini-out-dir">5415 W 3100 S,<br>West Valley City, UT 84120</div>
+      <a class="campo-link" id="ini-out-map" href="https://maps.google.com/?q=5415+W+3100+S+West+Valley+City+UT+84120" target="_blank">Ver Mapa</a>
     </div>
   </div>
   <div class="stitle">📋 Categorías</div>
-  <div id="cats-info"></div>
+  <div id="cats-list"></div>
 </div>
 
+<!-- HORARIO -->
 <div class="sec" id="tab-horario">
   <div class="chips" id="hor-chips"></div>
   <div class="jorn-sel" id="jorn-sel"></div>
   <div id="hor-cont"></div>
 </div>
 
+<!-- POSICIONES -->
 <div class="sec" id="tab-posiciones">
   <div id="pos-cont"></div>
 </div>
 
+<!-- FOTOS -->
 <div class="sec" id="tab-fotos">
   <div class="stitle">Galería de Juegos</div>
   <div class="fg" id="fotos-cont"></div>
 </div>
 
+<!-- CANCHAS -->
 <div class="sec" id="tab-canchas">
   <div class="stitle">Campos de Juego</div>
   <div id="can-cont"></div>
@@ -239,117 +237,160 @@
   <img id="modal-img" src="" alt="">
 </div>
 
+<!-- Botón refrescar manual -->
+<button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()" title="Actualizar datos">🔄</button>
+
 <script>
-// ── STATE ──
-let DB = null;
-let STATE = {
-  branding:{}, divisiones:[], equipos:{}, jornadas:[], partidos:[], canchas:[], fotos:[]
-};
+const DB = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let S = { branding:{}, divisiones:[], equipos:{}, jornadas:[], partidos:[], canchas:[], fotos:[] };
 let at='inicio', hDiv=null, hJorn=null;
+let pollInterval = null;
+
+// Colores automáticos para logos de equipos
+const TC=['#1a3a6e','#c0392b','#1a7a3a','#c8a020','#8e44ad','#2980b9','#d35400','#16a085','#2c3e50'];
+function tColor(n){let h=0;for(let i=0;i<(n||'').length;i++)h=(h*31+n.charCodeAt(i))%TC.length;return TC[h];}
+function tInit(n){if(!n)return'?';const w=n.trim().split(' ').filter(Boolean);return w.length>=2?(w[0][0]+w[1][0]).toUpperCase():n.substring(0,2).toUpperCase();}
+function avatarHtml(eq, size=26){
+  if(eq.logo_url){return `<span class="eq-av" style="width:${size}px;height:${size}px;background:#eee"><img src="${eq.logo_url}" alt="${eq.nombre}" onerror="this.parentElement.innerHTML='${tInit(eq.nombre)}';this.parentElement.style.background='${tColor(eq.nombre)}'"></span>`;}
+  return `<span class="eq-av" style="width:${size}px;height:${size}px;background:${tColor(eq.nombre)};font-size:${Math.round(size*.38)}px">${tInit(eq.nombre)}</span>`;
+}
+
+// ── LOAD ALL DATA FROM SUPABASE ──
+async function loadAll() {
+  try {
+    const [cfg, divs, eqs, jorns, parts, canchas, fotos] = await Promise.all([
+      DB.from('config').select('key,value'),
+      DB.from('divisiones').select('*').order('orden'),
+      DB.from('equipos').select('*'),
+      DB.from('jornadas').select('*').order('numero', {ascending:false}),
+      DB.from('partidos').select('*'),
+      DB.from('canchas').select('*').order('orden'),
+      DB.from('fotos').select('*').order('orden'),
+    ]);
+
+    // Config
+    const cfgMap={};
+    (cfg.data||[]).forEach(r=>cfgMap[r.key]=r.value);
+    S.branding = cfgMap.branding || {};
+
+    // Divisiones
+    S.divisiones = (divs.data||[]).map(d=>d.nombre);
+
+    // Equipos por división
+    S.equipos={};
+    (eqs.data||[]).forEach(e=>{
+      if(!S.equipos[e.division]) S.equipos[e.division]=[];
+      S.equipos[e.division].push(e);
+    });
+
+    // Jornadas y partidos
+    S.jornadas = jorns.data||[];
+    S.partidos = parts.data||[];
+    S.canchas = canchas.data||[];
+    S.fotos = (fotos.data||[]).filter(f=>f.activa!==false);
+
+    return true;
+  } catch(e) {
+    console.error('Error loading data:', e);
+    return false;
+  }
+}
+
+// ── REALTIME SUBSCRIPTION ──
+function setupRealtime() {
+  try {
+    DB.channel('app-realtime')
+      .on('postgres_changes', {event:'*', schema:'public', table:'config'},    async()=>{ await loadAll(); applyBranding(); render(); showSync(); })
+      .on('postgres_changes', {event:'*', schema:'public', table:'divisiones'}, async()=>{ await loadAll(); render(); showSync(); })
+      .on('postgres_changes', {event:'*', schema:'public', table:'equipos'},    async()=>{ await loadAll(); render(); showSync(); })
+      .on('postgres_changes', {event:'*', schema:'public', table:'jornadas'},   async()=>{ await loadAll(); render(); showSync(); })
+      .on('postgres_changes', {event:'*', schema:'public', table:'partidos'},   async()=>{ await loadAll(); render(); showSync(); })
+      .on('postgres_changes', {event:'*', schema:'public', table:'canchas'},    async()=>{ await loadAll(); render(); showSync(); })
+      .on('postgres_changes', {event:'*', schema:'public', table:'fotos'},      async()=>{ await loadAll(); render(); showSync(); })
+      .subscribe();
+  } catch(e) { console.log('Realtime not available, using polling'); }
+}
+
+// ── POLLING (backup each 15 seconds) ──
+function startPolling() {
+  if(pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(async()=>{
+    const ok = await loadAll();
+    if(ok){ applyBranding(); render(); }
+  }, 15000);
+}
+
+function showSync() {
+  const b = document.getElementById('sync-bar');
+  b.classList.remove('show');
+  void b.offsetWidth;
+  b.classList.add('show');
+}
+
+async function manualRefresh() {
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('spinning');
+  await loadAll();
+  applyBranding();
+  render();
+  showSync();
+  setTimeout(()=>btn.classList.remove('spinning'), 600);
+}
 
 // ── INIT ──
 async function init() {
-  if (!CONFIG_OK) {
-    document.getElementById('no-config-banner').style.display='block';
-    document.getElementById('loading').classList.add('hidden');
-    return;
-  }
-  DB = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   await loadAll();
-  subscribeRealtime();
-  document.getElementById('loading').classList.add('hidden');
-  document.getElementById('rt-dot').style.display='inline-block';
+  applyBranding();
+  document.getElementById('load-ov').classList.add('hidden');
   render();
-}
-
-async function loadAll() {
-  const [cfg, divs, eqs, jorns, parts, canchas, fotos] = await Promise.all([
-    DB.from('config').select('key,value'),
-    DB.from('divisiones').select('*').order('orden'),
-    DB.from('equipos').select('*'),
-    DB.from('jornadas').select('*').order('numero', {ascending:false}),
-    DB.from('partidos').select('*'),
-    DB.from('canchas').select('*').order('orden'),
-    DB.from('fotos').select('*').order('orden'),
-  ]);
-
-  // Config / branding
-  const cfgMap = {};
-  (cfg.data||[]).forEach(r => cfgMap[r.key] = r.value);
-  STATE.branding = cfgMap.branding || {};
-
-  // Divisiones
-  STATE.divisiones = (divs.data||[]).map(d=>d.nombre);
-
-  // Equipos por división
-  STATE.equipos = {};
-  (eqs.data||[]).forEach(e => {
-    if(!STATE.equipos[e.division]) STATE.equipos[e.division]=[];
-    STATE.equipos[e.division].push(e);
-  });
-
-  // Jornadas
-  STATE.jornadas = jorns.data || [];
-
-  // Partidos agrupados por jornada
-  STATE.partidos = parts.data || [];
-
-  // Canchas
-  STATE.canchas = canchas.data || [];
-
-  // Fotos
-  STATE.fotos = (fotos.data||[]).filter(f=>f.activa!==false);
-}
-
-// ── REALTIME ──
-function subscribeRealtime() {
-  DB.channel('liga-anta-changes')
-    .on('postgres_changes', {event:'*', schema:'public'}, async () => {
-      await loadAll();
-      applyBranding();
-      render();
-    })
-    .subscribe();
+  setupRealtime();
+  startPolling();
 }
 
 // ── BRANDING ──
 function applyBranding() {
-  const b = STATE.branding || {};
+  const b = S.branding||{};
   if(b.color1) document.documentElement.style.setProperty('--azul', b.color1);
   if(b.color2) document.documentElement.style.setProperty('--azul-mid', b.color2);
   if(b.color3) document.documentElement.style.setProperty('--azul-claro', b.color3);
 
-  const li = document.getElementById('hdr-logo-img');
-  const lb = document.getElementById('hdr-ball');
-  if(b.logo && b.logo.startsWith('http')) {
-    li.src=b.logo; li.style.display='block'; lb.style.display='none';
+  const logo = b.logo||'';
+  const hdrLogo = document.getElementById('hdr-logo');
+  const hdrBall = document.getElementById('hdr-ball');
+  const iniLogo = document.getElementById('ini-logo');
+  if(logo){
+    hdrLogo.src=logo; hdrLogo.style.display='block'; hdrBall.style.display='none';
+    iniLogo.src=logo; iniLogo.style.display='inline-block';
   } else {
-    lb.textContent=b.emoji||'⚽'; lb.style.display='block'; li.style.display='none';
+    hdrLogo.style.display='none'; hdrBall.style.display='block';
+    hdrBall.textContent=b.emoji||'⚽';
+    iniLogo.style.display='none';
   }
+
   const hn=document.getElementById('hdr-nombre'); if(hn) hn.textContent=b.nombre||'ANTA';
-  const ht=document.getElementById('hdr-temp'); if(ht) ht.innerHTML=(b.temporada||'2026')+'<span class="rt-dot"></span>';
-  const il=document.getElementById('ini-liga'); if(il) il.textContent='⚽ Liga '+(b.nombre||'ANTA');
-  const is=document.getElementById('ini-sub'); if(is) is.textContent=b.subtitulo||'';
-  const itl=document.getElementById('ini-tel'); if(itl) itl.href='tel:'+(b.tel||'').replace(/\D/g,'');
-  const itv=document.getElementById('ini-tel-v'); if(itv) itv.textContent=b.tel||'';
-  const iw=document.getElementById('ini-web'); if(iw) iw.href=b.web||'#';
-  const iwv=document.getElementById('ini-web-v'); if(iwv) iwv.textContent=(b.web||'').replace('https://','');
-  const iid=document.getElementById('ini-indoor-dir'); if(iid) iid.innerHTML=(b.indoorDir||'').replace(', ',',<br>');
-  const iim=document.getElementById('ini-indoor-map'); if(iim) iim.href=b.indoorMap||'#';
-  const iod=document.getElementById('ini-outdoor-dir'); if(iod) iod.innerHTML=(b.outdoorDir||'').replace(', ',',<br>');
-  const iom=document.getElementById('ini-outdoor-map'); if(iom) iom.href=b.outdoorMap||'#';
+  const ht=document.getElementById('hdr-temp'); if(ht) ht.innerHTML=(b.temporada||'2026')+'<span class="live-dot"></span>';
+  const il=document.getElementById('ini-liga-txt'); if(il) il.textContent='Liga '+(b.nombre||'ANTA');
+  const is=document.getElementById('ini-sub'); if(is&&b.subtitulo) is.textContent=b.subtitulo;
+
+  if(b.tel){const el=document.getElementById('ini-tel');if(el){el.href='tel:'+(b.tel||'').replace(/\D/g,'');el.textContent=b.tel;}}
+  if(b.web){const el=document.getElementById('ini-web');if(el){el.href=b.web;el.textContent=(b.web||'').replace('https://','').replace('http://','');}}
+  if(b.indoorDir){const el=document.getElementById('ini-ind-dir');if(el) el.innerHTML=b.indoorDir.replace(', ','<br>');}
+  if(b.indoorMap){const el=document.getElementById('ini-ind-map');if(el) el.href=b.indoorMap;}
+  if(b.outdoorDir){const el=document.getElementById('ini-out-dir');if(el) el.innerHTML=b.outdoorDir.replace(', ','<br>');}
+  if(b.outdoorMap){const el=document.getElementById('ini-out-map');if(el) el.href=b.outdoorMap;}
 }
 
 // ── TABS ──
-function setTab(t,b){
+function setTab(t,btn){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));
-  document.getElementById('tab-'+t).classList.add('active'); b.classList.add('active');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  btn.classList.add('active');
   at=t; render();
 }
 
 function render(){
-  applyBranding();
   if(at==='inicio') rInicio();
   if(at==='horario') rHorario();
   if(at==='posiciones') rPos();
@@ -359,12 +400,10 @@ function render(){
 
 // ── INICIO ──
 function rInicio(){
-  const divs=STATE.divisiones||[];
-  document.getElementById('cats-info').innerHTML=divs.map(d=>`
-    <div style="background:#fff;border:1px solid var(--borde);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;border-left:3px solid var(--azul)">
-      <div style="font-size:18px">⚽</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--azul)">${d}</div>
-    </div>`).join('');
+  const divs=S.divisiones||[];
+  document.getElementById('cats-list').innerHTML = divs.length
+    ? divs.map(d=>`<div style="background:#fff;border:1px solid var(--borde);border-radius:8px;padding:11px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px;border-left:3px solid var(--azul)"><div style="font-size:16px">⚽</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:var(--azul)">${d}</div></div>`).join('')
+    : '<div class="empty"><div class="big">📋</div><p>Sin categorías configuradas</p></div>';
 }
 
 // ── HORARIO ──
@@ -372,55 +411,61 @@ function setHDiv(d){hDiv=d;hJorn=null;rHorario();}
 function setHJorn(id){hJorn=id;rHorario();}
 
 function rHorario(){
-  const divs=STATE.divisiones||[];
-  if(!hDiv) hDiv=divs[0];
+  const divs=S.divisiones||[];
+  if(!divs.length){
+    document.getElementById('hor-chips').innerHTML='';
+    document.getElementById('jorn-sel').innerHTML='';
+    document.getElementById('hor-cont').innerHTML='<div class="empty"><div class="big">📅</div><p>Sin categorías configuradas</p></div>';
+    return;
+  }
+  if(!hDiv||!divs.includes(hDiv)) hDiv=divs[0];
+
   document.getElementById('hor-chips').innerHTML=divs.map(d=>
     `<button class="chip ${d===hDiv?'active':''}" onclick="setHDiv('${esc(d)}')">${d}</button>`).join('');
 
-  // Jornadas que tienen partidos de esta división
-  const partsDivAll=STATE.partidos.filter(p=>p.division===hDiv);
-  const jornadasIds=[...new Set(partsDivAll.map(p=>p.jornada_id))];
-  const jornadasDiv=STATE.jornadas.filter(j=>jornadasIds.includes(j.id)).sort((a,b)=>b.numero-a.numero);
+  // Partidos de esta división
+  const partsDiv = S.partidos.filter(p=>p.division===hDiv);
+  const jornadasIds=[...new Set(partsDiv.map(p=>p.jornada_id))];
+  const jornadasDiv = S.jornadas.filter(j=>jornadasIds.includes(j.id)).sort((a,b)=>b.numero-a.numero);
 
   if(!jornadasDiv.length){
     document.getElementById('jorn-sel').innerHTML='';
-    document.getElementById('hor-cont').innerHTML=`<div class="empty"><div class="big">📅</div><p>Sin partidos en esta categoría</p></div>`;
+    document.getElementById('hor-cont').innerHTML='<div class="empty"><div class="big">📅</div><p>Sin partidos en esta categoría</p></div>';
     return;
   }
 
   if(!hJorn||!jornadasDiv.find(j=>j.id===hJorn)) hJorn=jornadasDiv[0].id;
+
   document.getElementById('jorn-sel').innerHTML=jornadasDiv.map(j=>
-    `<button class="jbtn ${j.id===hJorn?'active':''}" onclick="setHJorn(${j.id})">J${j.numero} – ${j.fecha.split(' ').slice(0,2).join(' ')}</button>`).join('');
+    `<button class="jbtn ${j.id===hJorn?'active':''}" onclick="setHJorn(${j.id})">J${j.numero} · ${j.fecha.split(' ').slice(0,2).join(' ')}</button>`).join('');
 
   const jornada=jornadasDiv.find(j=>j.id===hJorn);
-  const partsJ=STATE.partidos.filter(p=>p.jornada_id===hJorn&&p.division===hDiv).sort((a,b)=>a.hora.localeCompare(b.hora));
+  const partsJ=S.partidos.filter(p=>p.jornada_id===hJorn&&p.division===hDiv).sort((a,b)=>a.hora.localeCompare(b.hora));
+
+  if(!partsJ.length){
+    document.getElementById('hor-cont').innerHTML='<div class="empty"><div class="big">📅</div><p>Sin partidos en esta jornada</p></div>';
+    return;
+  }
 
   // Agrupar por campo
   const campos={};
   partsJ.forEach(p=>{if(!campos[p.campo])campos[p.campo]=[];campos[p.campo].push(p);});
+  const fechaShort=(jornada.fecha||'').split(' ').slice(0,3).join(' ').toUpperCase();
 
-  const fechaShort=jornada.fecha.split(' ').slice(0,3).join(' ').toUpperCase();
-
-  let html=`<div class="cat-block">
-    <div class="cat-title">${hDiv}</div>`;
-  Object.entries(campos).forEach(([campo,partidos])=>{
-    html+=`<div class="hor-table-wrap">
-      <div class="hor-sub-lbl">${campo}</div>
-      <table class="hor">
-        <thead><tr><th>Campo</th><th>Hora</th><th>Equipo 1</th><th>Equipo 2</th><th>Fecha</th><th>Res.</th></tr></thead>
-        <tbody>`;
-    partidos.forEach(p=>{
+  let html=`<div class="cat-block"><div class="cat-title">${hDiv}</div>`;
+  Object.entries(campos).forEach(([campo,parts])=>{
+    html+=`<div class="hor-table-wrap"><div class="hor-sub-lbl">${campo}</div>
+    <table class="hor"><thead><tr><th>Campo</th><th>Hora</th><th>Equipo 1</th><th>Equipo 2</th><th>Fecha</th><th>Res.</th></tr></thead><tbody>`;
+    parts.forEach(p=>{
       const lW=p.jugado&&p.goles_local>p.goles_visitante;
       const vW=p.jugado&&p.goles_visitante>p.goles_local;
       html+=`<tr>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--azul)">${p.campo.split(' ').pop()}</td>
+        <td style="font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--azul)">${(p.campo||'').split(' ').pop()}</td>
         <td style="color:var(--dim);font-size:11px">${p.hora}</td>
-        <td class="${lW?'eq-win':''}">${p.local}</td>
-        <td class="${vW?'eq-win':''}">${p.visitante}</td>
-        <td style="font-size:11px;color:var(--dim)">${fechaShort}</td>
-        <td>${p.jugado
-          ?`<span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14px">${p.goles_local}–${p.goles_visitante}</span>`
-          :`<span class="pend-badge">VS</span>`}</td>
+        <td class="${lW?'eq-w':''}">${p.local}</td>
+        <td class="${vW?'eq-w':''}">${p.visitante}</td>
+        <td style="font-size:10px;color:var(--dim)">${fechaShort}</td>
+        <td>${p.jugado?`<span class="res-score">${p.goles_local}–${p.goles_visitante}</span>`:'<span class="pend">VS</span>'}</td>
       </tr>`;
     });
     html+=`</tbody></table></div>`;
@@ -431,54 +476,55 @@ function rHorario(){
 
 // ── POSICIONES ──
 function rPos(){
-  const divs=STATE.divisiones||[];
+  const divs=S.divisiones||[];
+  if(!divs.length){document.getElementById('pos-cont').innerHTML='<div class="empty"><div class="big">🏆</div><p>Sin categorías</p></div>';return;}
   let html='';
   divs.forEach(div=>{
-    const eqs=[...(STATE.equipos[div]||[])].map(e=>({...e,pts:e.pg*3+e.pe})).sort((a,b)=>b.pts-a.pts||(b.gf-b.gc)-(a.gf-a.gc));
+    const eqs=[...(S.equipos[div]||[])].map(e=>({...e,pts:e.pg*3+e.pe})).sort((a,b)=>b.pts-a.pts||(b.gf-b.gc)-(a.gf-a.gc));
     if(!eqs.length) return;
     html+=`<div class="pos-table-wrap">
       <div class="pos-cat-title">${div}</div>
-      <table class="pos">
-        <thead><tr>
-          <th class="lt">#</th><th class="lt">Equipo</th>
-          <th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th>
-        </tr></thead>
-        <tbody>${eqs.map((e,i)=>`<tr class="${i===0?'top1':''}">
-          <td class="pos-num">${i===0?`<span class="gold-pos">1</span>`:i+1}</td>
-          <td class="lt">${e.nombre}</td>
-          <td>${e.pj}</td><td>${e.pg}</td><td>${e.pe}</td><td>${e.pp}</td>
-          <td>${e.gf}</td><td>${e.gc}</td>
-          <td style="color:${e.gf-e.gc>0?'var(--verde)':e.gf-e.gc<0?'var(--rojo)':'var(--dim)'}">${e.gf-e.gc>0?'+':''}${e.gf-e.gc}</td>
-          <td class="pts-val">${e.pts}</td>
-        </tr>`).join('')}</tbody>
-      </table>
+      <table class="pos"><thead><tr>
+        <th class="lt">#</th><th class="lt">Equipo</th>
+        <th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th>
+      </tr></thead><tbody>
+      ${eqs.map((e,i)=>`<tr class="${i===0?'top1':''}">
+        <td class="pos-n">${i===0?`<span class="gold-pos">1</span>`:i+1}</td>
+        <td class="lt">${avatarHtml(e)}${e.nombre}</td>
+        <td>${e.pj}</td><td>${e.pg}</td><td>${e.pe}</td><td>${e.pp}</td>
+        <td>${e.gf}</td><td>${e.gc}</td>
+        <td style="color:${e.gf-e.gc>0?'var(--verde)':e.gf-e.gc<0?'var(--rojo)':'var(--dim)'}">${e.gf-e.gc>0?'+':''}${e.gf-e.gc}</td>
+        <td class="pts-v">${e.pts}</td>
+      </tr>`).join('')}
+      </tbody></table>
     </div>`;
   });
-  document.getElementById('pos-cont').innerHTML=html||`<div class="empty"><div class="big">🏆</div><p>Sin datos</p></div>`;
+  document.getElementById('pos-cont').innerHTML=html||'<div class="empty"><div class="big">🏆</div><p>Sin equipos</p></div>';
 }
 
 // ── FOTOS ──
 function rFotos(){
-  const f=STATE.fotos||[];
+  const f=S.fotos||[];
   const c=document.getElementById('fotos-cont');
-  c.innerHTML=f.length?f.map(x=>x.url
-    ?`<div class="fi ${x.tipo==='grande'?'g':''}" onclick="openMod('${x.url}')"><img src="${x.url}" loading="lazy"><div class="fi-lbl">${x.titulo}</div></div>`
+  if(!f.length){c.innerHTML='<div style="grid-column:span 2" class="empty"><div class="big">📸</div><p>Sin fotos aún</p></div>';return;}
+  c.innerHTML=f.map(x=>x.url
+    ?`<div class="fi ${x.tipo==='grande'?'g':''}" onclick="openMod('${x.url}')"><img src="${x.url}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=fi-ph>📷<span style=font-size:11px>${x.titulo}</span></div>'"><div class="fi-lbl">${x.titulo}</div></div>`
     :`<div class="fi ${x.tipo==='grande'?'g':''}"><div class="fi-ph">📷<span style="font-size:11px;font-family:'Barlow Condensed'">${x.titulo}</span></div></div>`
-  ).join(''):`<div style="grid-column:span 2" class="empty"><div class="big">📸</div><p>Sin fotos</p></div>`;
+  ).join('');
 }
 
 // ── CANCHAS ──
 function rCanchas(){
-  const cc=STATE.canchas||[];
-  const icos=['🏟️','⛳','📍'];
+  const cc=S.canchas||[];
+  const icos=['🏟️','⛳','📍','🏟️'];
   document.getElementById('can-cont').innerHTML=cc.length
-    ?cc.map((c,i)=>`<div class="cc"><div class="cc-ico">${icos[i]||'📍'}</div><div><div class="cc-nom">${c.nombre}</div><div class="cc-dir">${c.direccion}</div></div>${c.mapa_url?`<a href="${c.mapa_url}" target="_blank" class="cc-link">🗺️</a>`:''}</div>`).join('')
-    :`<div class="empty"><div class="big">📍</div><p>Sin canchas</p></div>`;
+    ?cc.map((c,i)=>`<div class="cc"><div class="cc-ico">${icos[i%icos.length]}</div><div><div class="cc-nom">${c.nombre}</div><div class="cc-dir">${c.direccion}</div></div>${c.mapa_url?`<a href="${c.mapa_url}" target="_blank" class="cc-link">🗺️</a>`:''}</div>`).join('')
+    :'<div class="empty"><div class="big">📍</div><p>Sin canchas</p></div>';
 }
 
 function openMod(u){document.getElementById('modal-img').src=u;document.getElementById('modal').classList.add('open');}
 function closeMod(){document.getElementById('modal').classList.remove('open');}
-function esc(s){return s.replace(/'/g,"\\'");}
+function esc(s){return(s||'').replace(/'/g,"\\'");}
 
 init();
 </script>
