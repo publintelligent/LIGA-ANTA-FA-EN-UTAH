@@ -356,20 +356,50 @@ async function init(){
 
 function applyBrand(){
   const b=S.branding||{};
+  const icons=b.icons||{};
+
+  // Colors
   if(b.color1)document.documentElement.style.setProperty('--az',b.color1);
   if(b.color2)document.documentElement.style.setProperty('--az2',b.color2);
   if(b.color3)document.documentElement.style.setProperty('--az3',b.color3);
+
+  // Fonts
+  const ft=b.fontTitle||'Barlow Condensed';
+  const fb=b.fontBody||'Barlow';
+  [ft,fb].filter(f=>!['Barlow Condensed','Barlow'].includes(f)).forEach(f=>{
+    const url=`https://fonts.googleapis.com/css2?family=${f.replace(/ /g,'+')}:wght@400;600;700;800;900&display=swap`;
+    if(!document.querySelector(`link[href="${url}"]`)){const l=document.createElement('link');l.rel='stylesheet';l.href=url;document.head.appendChild(l);}
+  });
+  setTimeout(()=>{
+    document.body.style.fontFamily=`'${fb}',sans-serif`;
+    document.querySelectorAll('.hdr-tx .nom,.banner-title,.cat-name,.pos-blk-hdr,.campo-blk-hdr,.stit,.cc-name,.bnav .bni-lbl,.campo-blk-hdr,.dpill,.jpill').forEach(el=>el.style.fontFamily=`'${ft}',sans-serif`);
+  },400);
+
+  // Logo
   const logo=b.logo||'';
   const hl=document.getElementById('hdr-logo'),hb=document.getElementById('hdr-ball');
   const cl=document.getElementById('cc-logo'),cb=document.getElementById('cc-ball');
+  const ligaIco=icons.liga||b.emoji||'⚽';
   if(logo){hl.src=logo;hl.style.display='block';hb.style.display='none';cl.src=logo;cl.style.display='block';cb.style.display='none';}
-  else{hl.style.display='none';hb.style.display='block';hb.textContent=b.emoji||'⚽';cl.style.display='none';cb.style.display='block';cb.textContent=b.emoji||'⚽';}
-  const set=(id,v)=>{const e=document.getElementById(id);if(e&&v)e.textContent=v;};
+  else{hl.style.display='none';hb.style.display='block';hb.textContent=ligaIco;cl.style.display='none';cb.style.display='block';cb.textContent=ligaIco;}
+
+  // Nav bar icons
+  const navKeys=['inicio','horario','posiciones','fotos','canchas'];
+  const navDef=['🏠','📅','🏆','📸','📍'];
+  document.querySelectorAll('.bni .bni-ico').forEach((el,i)=>el.textContent=icons[navKeys[i]]||navDef[i]);
+
+  // Campo icons
+  const campoIcos=document.querySelectorAll('.campo-top .ci2');
+  if(campoIcos[0])campoIcos[0].textContent=icons.indoor||'🏟️';
+  if(campoIcos[1])campoIcos[1].textContent=icons.outdoor||'⛳';
+
+  // Text fields
+  const set=(id,v)=>{const e=document.getElementById(id);if(e&&v!==undefined&&v!=='')e.textContent=v;};
   const seta=(id,attr,v)=>{const e=document.getElementById(id);if(e&&v)e[attr]=v;};
   set('hdr-nom',b.nombre||'ANTA');
-  set('hdr-yr',(b.temporada||'2026'));document.getElementById('hdr-yr').innerHTML=(b.temporada||'2026')+'<span class="ldot"></span>';
+  document.getElementById('hdr-yr').innerHTML=(b.temporada||'2026')+'<span class="ldot"></span>';
   set('cc-name','Liga '+(b.nombre||'ANTA'));
-  set('cc-sub',b.subtitulo);
+  if(b.subtitulo)set('cc-sub',b.subtitulo);
   if(b.tel){seta('ci-tel','href','tel:'+(b.tel||'').replace(/\D/g,''));set('ci-tel-v',b.tel);}
   if(b.web){seta('ci-web','href',b.web);set('ci-web-v',(b.web||'').replace('https://','').replace('http://',''));}
   if(b.indoorDir)set('ind-addr',b.indoorDir);
