@@ -505,6 +505,19 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 <div class="mback" id="m-can"><div class="mbox">
   <div class="mhead"><h3>📍 Cancha</h3><button class="mcls" onclick="closeM('m-can')">✕</button></div>
+  <!-- LOGO CANCHA -->
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--br)">
+    <div id="can-av-prev" style="width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--az);overflow:hidden;flex-shrink:0">📍</div>
+    <div style="flex:1">
+      <div class="flbl2" style="margin-bottom:6px">Ícono / Logo de la cancha</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px">
+        <button class="btn btn-gray btn-sm" onclick="document.getElementById('can-logo-file').click()">📁 Subir imagen</button>
+        <button class="btn btn-red btn-sm" onclick="clearCanLogo()">✕ Quitar</button>
+      </div>
+      <input type="file" id="can-logo-file" accept="image/*" style="display:none" onchange="handleCanLogoFile(event)">
+      <input type="text" class="fi2" id="c-logo" placeholder="O pega URL de imagen / emoji (🏟️)..." oninput="updCanPrev()">
+    </div>
+  </div>
   <div class="fg2">
     <div class="fgrp full"><label class="flbl2">Nombre</label><input type="text" class="fi2" id="c-nom"></div>
     <div class="fgrp full"><label class="flbl2">Dirección</label><input type="text" class="fi2" id="c-dir"></div>
@@ -886,10 +899,83 @@ async function saveME(){
 async function delEq(id){if(!confirm('¿Eliminar equipo?'))return;await DB.from('equipos').delete().eq('id',id);await loadAll();rEquip();toast('🗑️ Eliminado');}
 
 // ── CANCHAS ──
-function rCan(){document.getElementById('can-tbody').innerHTML=(S.canchas||[]).length?(S.canchas||[]).map((c,i)=>`<tr><td>${i+1}</td><td><strong>${c.nombre}</strong></td><td>${c.direccion}</td><td>${c.mapa_url?`<a href="${c.mapa_url}" target="_blank" style="color:var(--az2);font-size:12px;font-weight:600">🔗 Ver</a>`:'—'}</td><td><div style="display:flex;gap:5px"><button class="btn btn-gray btn-sm" onclick="openMCanedit(${c.id})">✏️</button><button class="btn btn-red btn-sm" onclick="delCan(${c.id})">🗑️</button></div></td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--dm);padding:16px">Sin canchas</td></tr>';}
-function openMCan(id){editCan=null;['c-nom','c-dir','c-map'].forEach(x=>document.getElementById(x).value='');openM('m-can');}
-function openMCanedit(id){const c=S.canchas.find(x=>x.id===id);if(!c)return;editCan=id;document.getElementById('c-nom').value=c.nombre||'';document.getElementById('c-dir').value=c.direccion||'';document.getElementById('c-map').value=c.mapa_url||'';document.getElementById('c-tipo').value=c.tipo||'indoor';openM('m-can');}
-async function saveMCan(){const nom=document.getElementById('c-nom').value||'Campo',dir=document.getElementById('c-dir').value||'Sin dirección',map=document.getElementById('c-map').value,tipo=document.getElementById('c-tipo').value;const data={nombre:nom,direccion:dir,mapa_url:map,tipo};let error;if(editCan){({error}=await DB.from('canchas').update(data).eq('id',editCan));}else{({error}=await DB.from('canchas').insert(data));}if(error){alert('Error: '+error.message);return;}toast('✅ Cancha guardada');closeM('m-can');await loadAll();rCan();}
+let canLogoData = '';
+
+function rCan(){
+  document.getElementById('can-tbody').innerHTML=(S.canchas||[]).length
+    ?(S.canchas||[]).map((c,i)=>`<tr>
+      <td>${i+1}</td>
+      <td><div style="display:flex;align-items:center;gap:10px">
+        ${c.logo_url
+          ? (c.logo_url.startsWith('data:')||c.logo_url.startsWith('http')
+              ? `<img src="${c.logo_url}" style="width:36px;height:36px;object-fit:cover;border-radius:7px;border:1px solid var(--br)">`
+              : `<span style="font-size:24px">${c.logo_url}</span>`)
+          : `<span style="width:36px;height:36px;background:var(--az);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:18px">📍</span>`}
+        <strong>${c.nombre}</strong>
+      </div></td>
+      <td style="font-size:12px">${c.direccion}</td>
+      <td>${c.mapa_url?`<a href="${c.mapa_url}" target="_blank" style="color:var(--az2);font-size:12px;font-weight:600">🔗 Ver</a>`:'—'}</td>
+      <td><div style="display:flex;gap:5px">
+        <button class="btn btn-gray btn-sm" onclick="openMCanedit(${c.id})">✏️ Editar</button>
+        <button class="btn btn-red btn-sm" onclick="delCan(${c.id})">🗑️</button>
+      </div></td>
+    </tr>`).join('')
+    :'<tr><td colspan="5" style="text-align:center;color:var(--dm);padding:16px">Sin canchas</td></tr>';
+}
+
+function updCanPrev(){
+  const val=canLogoData||document.getElementById('c-logo').value||'';
+  const p=document.getElementById('can-av-prev');
+  if(!val){p.textContent='📍';p.style.background='var(--az)';p.style.fontSize='28px';return;}
+  if(val.startsWith('data:')||val.startsWith('http')){
+    p.innerHTML=`<img src="${val}" style="width:100%;height:100%;object-fit:cover;border-radius:10px" onerror="this.parentElement.textContent='📍'">`;
+    p.style.background='#eee';
+  } else {
+    // treat as emoji
+    p.textContent=val;p.style.background='var(--az)';p.style.fontSize='28px';
+  }
+}
+function handleCanLogoFile(e){
+  const f=e.target.files[0];if(!f)return;
+  if(f.size>2*1024*1024){alert('Máx 2MB');return;}
+  const r=new FileReader();
+  r.onload=ev=>{canLogoData=ev.target.result;document.getElementById('c-logo').value='';updCanPrev();};
+  r.readAsDataURL(f);
+}
+function clearCanLogo(){canLogoData='';document.getElementById('c-logo').value='';updCanPrev();}
+
+function openMCan(id){
+  editCan=null;canLogoData='';
+  ['c-nom','c-dir','c-map','c-logo'].forEach(x=>document.getElementById(x).value='');
+  document.getElementById('c-tipo').value='indoor';
+  updCanPrev();
+  openM('m-can');
+}
+function openMCanedit(id){
+  const c=S.canchas.find(x=>x.id===id);if(!c)return;
+  editCan=id;canLogoData='';
+  document.getElementById('c-nom').value=c.nombre||'';
+  document.getElementById('c-dir').value=c.direccion||'';
+  document.getElementById('c-map').value=c.mapa_url||'';
+  document.getElementById('c-tipo').value=c.tipo||'indoor';
+  document.getElementById('c-logo').value=c.logo_url||'';
+  updCanPrev();
+  openM('m-can');
+}
+async function saveMCan(){
+  const nom=document.getElementById('c-nom').value||'Campo';
+  const dir=document.getElementById('c-dir').value||'Sin dirección';
+  const map=document.getElementById('c-map').value;
+  const tipo=document.getElementById('c-tipo').value;
+  const logoInput=document.getElementById('c-logo').value.trim();
+  const logo_url=canLogoData||logoInput||null;
+  const data={nombre:nom,direccion:dir,mapa_url:map,tipo,logo_url};
+  let error;
+  if(editCan){({error}=await DB.from('canchas').update(data).eq('id',editCan));}
+  else{({error}=await DB.from('canchas').insert(data));}
+  if(error){alert('Error: '+error.message);return;}
+  toast('✅ Cancha guardada');closeM('m-can');canLogoData='';await loadAll();rCan();
+}
 async function delCan(id){if(!confirm('¿Eliminar?'))return;await DB.from('canchas').delete().eq('id',id);await loadAll();rCan();toast('🗑️ Eliminada');}
 
 // ── CATEGORY INLINE MANAGER (in Equipos panel) ──
@@ -909,20 +995,39 @@ async function saveCatsInline() {
   // Read latest values from inputs
   const inputs = document.querySelectorAll('#cat-manager-list input[type=text]');
   catInlineList = Array.from(inputs).map(x => x.value.trim()).filter(Boolean);
+
   // Get current from Supabase
-  const { data: cur } = await DB.from('divisiones').select('nombre');
+  const { data: cur } = await DB.from('divisiones').select('nombre,orden');
   const curNames = (cur || []).map(d => d.nombre);
+
+  // Names that were completely removed (not renamed)
   const toDelete = curNames.filter(n => !catInlineList.includes(n));
-  if (toDelete.length > 0) {
-    const { error } = await DB.from('divisiones').delete().in('nombre', toDelete);
-    if (error) { alert('Error borrando: ' + error.message); return; }
+
+  // Only delete divisions that are truly gone AND have no equipos
+  for (const nombre of toDelete) {
+    const { data: eqsInDiv } = await DB.from('equipos').select('id').eq('division', nombre);
+    if (eqsInDiv && eqsInDiv.length > 0) {
+      // Has equipos — warn user instead of silently deleting
+      if (!confirm(`La categoría "${nombre}" tiene ${eqsInDiv.length} equipo(s). ¿Eliminarla? Los equipos también se borrarán.`)) {
+        toast('⚠️ Operación cancelada'); return;
+      }
+      // Delete equipos first to avoid FK issues
+      await DB.from('equipos').delete().eq('division', nombre);
+    }
+    await DB.from('divisiones').delete().eq('nombre', nombre);
   }
+
+  // Upsert remaining/new ones (by name — safe for renames only if it's a new name)
   for (let i = 0; i < catInlineList.length; i++) {
-    await DB.from('divisiones').upsert({ nombre: catInlineList[i], orden: i + 1 }, { onConflict: 'nombre' });
+    await DB.from('divisiones').upsert(
+      { nombre: catInlineList[i], orden: i + 1 },
+      { onConflict: 'nombre' }
+    );
   }
+
   toast('✅ Categorías guardadas');
   await loadAll();
-  rEquip(); // refresh equipos panel so dtabs and eq-div select update
+  rEquip();
 }
 
 // ── FOTOS DRAG & DROP ──
@@ -1229,24 +1334,25 @@ async function saveConf(){
   await DB.from('config').upsert({key:'campos_opciones',value:cfgCamposList});
   if(newPw) await DB.from('config').upsert({key:'admin_password',value:newPw});
 
-  // ── SYNC DIVISIONES: DELETE removed, UPSERT new/existing ──
-  // Step 1: get current names from Supabase
+  // ── SYNC DIVISIONES: safe delete only truly removed cats ──
   const{data:currentDivs,error:fetchErr}=await DB.from('divisiones').select('nombre');
   if(fetchErr){alert('Error leyendo categorías: '+fetchErr.message);return;}
-
   const currentNames=(currentDivs||[]).map(d=>d.nombre);
   const toDelete=currentNames.filter(n=>!cfgDivsList.includes(n));
-  const toUpsert=cfgDivsList;
 
-  // Step 2: delete removed ones
-  if(toDelete.length>0){
-    const{error:delErr}=await DB.from('divisiones').delete().in('nombre',toDelete);
-    if(delErr){alert('Error borrando categorías: '+delErr.message);return;}
+  for(const nombre of toDelete){
+    const{data:eqs}=await DB.from('equipos').select('id').eq('division',nombre);
+    if(eqs&&eqs.length>0){
+      if(!confirm(`La categoría "${nombre}" tiene ${eqs.length} equipo(s). ¿Eliminarla? Los equipos también se borrarán.`)){
+        toast('⚠️ Cancelado');return;
+      }
+      await DB.from('equipos').delete().eq('division',nombre);
+    }
+    await DB.from('divisiones').delete().eq('nombre',nombre);
   }
 
-  // Step 3: upsert remaining/new ones
-  for(let i=0;i<toUpsert.length;i++){
-    await DB.from('divisiones').upsert({nombre:toUpsert[i],orden:i+1},{onConflict:'nombre'});
+  for(let i=0;i<cfgDivsList.length;i++){
+    await DB.from('divisiones').upsert({nombre:cfgDivsList[i],orden:i+1},{onConflict:'nombre'});
   }
 
   toast('✅ Configuración guardada');
