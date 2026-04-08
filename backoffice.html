@@ -222,7 +222,17 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
     <!-- EQUIPOS -->
     <div class="panel" id="panel-equipos">
-      <div style="display:flex;gap:10px;margin-bottom:14px">
+      <!-- CATEGORIAS MANAGER -->
+      <div class="tw" style="margin-bottom:20px;padding:18px">
+        <div class="tw-hdr" style="margin:-18px -18px 14px;border-radius:10px 10px 0 0"><h3>📋 Categorías</h3><span style="font-size:12px;color:var(--dm);font-weight:400">Los cambios se sincronizan con la app</span></div>
+        <div id="cat-manager-list"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn btn-gray btn-sm" onclick="addCatInline()">+ Nueva Categoría</button>
+          <button class="btn btn-blue btn-sm" onclick="saveCatsInline()">💾 Guardar Categorías</button>
+        </div>
+      </div>
+      <!-- EQUIPOS TABLE -->
+      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
         <button class="btn btn-blue" onclick="openME(null)">+ Nuevo Equipo</button>
       </div>
       <div class="dtabs" id="eq-dtabs"></div>
@@ -240,8 +250,25 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
     <!-- FOTOS -->
     <div class="panel" id="panel-fotos">
-      <button class="btn btn-blue" style="margin-bottom:16px" onclick="openMFoto(null)">+ Agregar Foto</button>
-      <div class="tw"><table class="mt"><thead><tr><th>#</th><th>Título</th><th>URL</th><th>Tipo</th><th>Acciones</th></tr></thead><tbody id="foto-tbody"></tbody></table></div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <button class="btn btn-blue" onclick="openMFoto(null)">+ Agregar Foto / Link</button>
+      </div>
+      <!-- DRAG & DROP ZONE -->
+      <div id="foto-drop-zone" style="border:2px dashed var(--br2);border-radius:12px;padding:28px;text-align:center;background:var(--bg);margin-bottom:20px;transition:all .2s;cursor:pointer;" ondragover="fotozDragOver(event)" ondragleave="fotozDragLeave(event)" ondrop="fotozDrop(event)" onclick="document.getElementById('foto-bulk-file').click()">
+        <input type="file" id="foto-bulk-file" accept="image/*" multiple style="display:none" onchange="fotozFileSelect(event)">
+        <div style="font-size:40px;margin-bottom:8px">📸</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:var(--az)">Arrastra imágenes aquí</div>
+        <div style="font-size:13px;color:var(--dm);margin-top:4px">o haz clic para seleccionar — puedes subir varias a la vez</div>
+      </div>
+      <div id="foto-upload-queue" style="display:none;margin-bottom:16px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--az);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">📤 Imágenes seleccionadas</div>
+        <div id="foto-queue-items"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn btn-blue" onclick="uploadQueuedFotos()">💾 Guardar todas</button>
+          <button class="btn btn-gray" onclick="clearFotoQueue()">✕ Cancelar</button>
+        </div>
+      </div>
+      <div class="tw"><table class="mt"><thead><tr><th>#</th><th style="width:60px">Preview</th><th>Título</th><th>Tipo</th><th>Acciones</th></tr></thead><tbody id="foto-tbody"></tbody></table></div>
     </div>
 
     <!-- BRANDING -->
@@ -328,9 +355,6 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
         </div>
         <div class="fgrp" style="margin-bottom:20px"><label class="flbl2">Nueva Contraseña</label><input type="password" class="fi2" id="cfg-pw" placeholder="Vacío = sin cambio"></div>
         <button class="btn btn-blue" onclick="saveConf()">💾 Guardar Todo</button>
-        <div class="sep"></div>
-        <div style="font-size:12px;font-weight:700;color:var(--rd);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">⚠️ Zona Peligrosa</div>
-        <button class="btn btn-red" onclick="resetAll()">🗑️ Eliminar todos los datos</button>
       </div>
     </div>
   </div>
@@ -402,11 +426,28 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 </div></div>
 
 <div class="mback" id="m-foto"><div class="mbox">
-  <div class="mhead"><h3>📸 Foto</h3><button class="mcls" onclick="closeM('m-foto')">✕</button></div>
+  <div class="mhead"><h3>📸 Foto / Imagen</h3><button class="mcls" onclick="closeM('m-foto')">✕</button></div>
+  <!-- UPLOAD or URL -->
+  <div style="margin-bottom:16px">
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button class="btn btn-gray btn-sm" id="foto-tab-file" onclick="fotoTab('file')" style="flex:1">📁 Subir imagen</button>
+      <button class="btn btn-gray btn-sm" id="foto-tab-url" onclick="fotoTab('url')" style="flex:1">🔗 Por URL</button>
+    </div>
+    <div id="foto-panel-file">
+      <div class="logo-up" onclick="document.getElementById('foto-single-file').click()" id="foto-single-drop">
+        <input type="file" id="foto-single-file" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%" onchange="handleFotoSingle(event)">
+        <div id="foto-single-txt"><div style="font-size:28px;margin-bottom:6px">🖼️</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--az)">Clic o arrastra imagen</div></div>
+      </div>
+      <div id="foto-single-prev" style="display:none;text-align:center;margin-top:10px"><img id="foto-single-img" src="" style="max-height:100px;border-radius:8px;border:1px solid var(--br)"></div>
+    </div>
+    <div id="foto-panel-url" style="display:none">
+      <div class="fgrp"><label class="flbl2">URL de imagen</label><input type="text" class="fi2" id="f-url" placeholder="https://..." oninput="prevFotoUrl()"></div>
+      <div id="f-url-prev" style="display:none;text-align:center;margin-top:8px"><img id="f-url-img" src="" style="max-height:80px;border-radius:8px;border:1px solid var(--br)"></div>
+    </div>
+  </div>
   <div class="fg2">
-    <div class="fgrp full"><label class="flbl2">Título</label><input type="text" class="fi2" id="f-tit"></div>
-    <div class="fgrp full"><label class="flbl2">URL de imagen</label><input type="text" class="fi2" id="f-url" placeholder="https://..."></div>
-    <div class="fgrp full"><label class="flbl2">Tamaño</label><select class="fsel" id="f-tipo"><option value="normal">Normal (mitad)</option><option value="grande">Grande (completo)</option></select></div>
+    <div class="fgrp full"><label class="flbl2">Título</label><input type="text" class="fi2" id="f-tit" placeholder="Descripción de la foto"></div>
+    <div class="fgrp full"><label class="flbl2">Tamaño en galería</label><select class="fsel" id="f-tipo"><option value="normal">Normal (mitad del ancho)</option><option value="grande">Grande (ancho completo)</option></select></div>
   </div>
   <div class="mfoot"><button class="btn btn-gray" onclick="closeM('m-foto')">Cancelar</button><button class="btn btn-blue" onclick="saveMFoto()">💾 Guardar</button></div>
 </div></div>
@@ -693,6 +734,8 @@ async function delPart(id){if(!confirm('¿Eliminar partido?'))return;await DB.fr
 // ── EQUIPOS ──
 function rEquip(){
   const divs=S.divisiones||[];if(!eqDiv||!divs.includes(eqDiv))eqDiv=divs[0];
+  // Render category manager at top of equipos panel
+  renderCatManager();
   document.getElementById('eq-dtabs').innerHTML=divs.map(d=>`<button class="dtab ${d===eqDiv?'on':''}" onclick="setEqDiv('${esc(d)}')">${d}</button>`).join('');
   const eqs=[...(S.equipos[eqDiv]||[])].map(e=>({...e,pts:e.pg*3+e.pe})).sort((a,b)=>b.pts-a.pts);
   document.getElementById('eq-tbody').innerHTML=eqs.length
@@ -705,11 +748,30 @@ function rEquip(){
         <button class="btn btn-red btn-sm" onclick="delEq(${e.id})">🗑️</button>
       </div></td>
     </tr>`).join('')
-    :'<tr><td colspan="11" style="text-align:center;color:var(--dm);padding:20px">Sin equipos</td></tr>';
+    :'<tr><td colspan="11" style="text-align:center;color:var(--dm);padding:20px">Sin equipos — agrega el primero arriba</td></tr>';
 }
 function setEqDiv(d){eqDiv=d;rEquip();}
-function openME(id){editEq=null;eqLogoData='';document.getElementById('me-tit').textContent='🏆 Nuevo Equipo';document.getElementById('eq-div').innerHTML=(S.divisiones||[]).map(d=>`<option value="${d}" ${d===eqDiv?'selected':''}>${d}</option>`).join('');document.getElementById('eq-nom').value='';document.getElementById('eq-logo-url').value='';['eq-pj','eq-pg','eq-pe','eq-pp','eq-gf','eq-gc'].forEach(x=>document.getElementById(x).value='0');updEqPrev();openM('m-eq');}
-function openMEedit(id){const eq=Object.values(S.equipos).flat().find(e=>e.id===id);if(!eq)return;editEq=id;eqLogoData=eq.logo_url||'';document.getElementById('me-tit').textContent='✏️ '+eq.nombre;document.getElementById('eq-div').innerHTML=(S.divisiones||[]).map(d=>`<option value="${d}" ${d===eq.division?'selected':''}>${d}</option>`).join('');document.getElementById('eq-nom').value=eq.nombre;document.getElementById('eq-logo-url').value=eq.logo_url||'';document.getElementById('eq-pj').value=eq.pj;document.getElementById('eq-pg').value=eq.pg;document.getElementById('eq-pe').value=eq.pe;document.getElementById('eq-pp').value=eq.pp;document.getElementById('eq-gf').value=eq.gf;document.getElementById('eq-gc').value=eq.gc;updEqPrev();openM('m-eq');}
+function openME(id){
+  editEq=null;eqLogoData='';
+  document.getElementById('me-tit').textContent='🏆 Nuevo Equipo';
+  // Always use latest S.divisiones so it matches config
+  document.getElementById('eq-div').innerHTML=(S.divisiones||[]).map(d=>`<option value="${d}" ${d===eqDiv?'selected':''}>${d}</option>`).join('');
+  document.getElementById('eq-nom').value='';document.getElementById('eq-logo-url').value='';
+  ['eq-pj','eq-pg','eq-pe','eq-pp','eq-gf','eq-gc'].forEach(x=>document.getElementById(x).value='0');
+  updEqPrev();openM('m-eq');
+}
+function openMEedit(id){
+  const eq=Object.values(S.equipos).flat().find(e=>e.id===id);if(!eq)return;
+  editEq=id;eqLogoData=eq.logo_url||'';
+  document.getElementById('me-tit').textContent='✏️ '+eq.nombre;
+  // Always use latest S.divisiones
+  document.getElementById('eq-div').innerHTML=(S.divisiones||[]).map(d=>`<option value="${d}" ${d===eq.division?'selected':''}>${d}</option>`).join('');
+  document.getElementById('eq-nom').value=eq.nombre;document.getElementById('eq-logo-url').value=eq.logo_url||'';
+  document.getElementById('eq-pj').value=eq.pj;document.getElementById('eq-pg').value=eq.pg;
+  document.getElementById('eq-pe').value=eq.pe;document.getElementById('eq-pp').value=eq.pp;
+  document.getElementById('eq-gf').value=eq.gf;document.getElementById('eq-gc').value=eq.gc;
+  updEqPrev();openM('m-eq');
+}
 function handleEqLogoFile(e){const f=e.target.files[0];if(!f)return;if(f.size>2*1024*1024){alert('Máx 2MB');return;}const r=new FileReader();r.onload=ev=>{eqLogoData=ev.target.result;document.getElementById('eq-logo-url').value='';updEqPrev();};r.readAsDataURL(f);}
 function useAutoLogo(){eqLogoData='';document.getElementById('eq-logo-url').value='';updEqPrev();}
 function clearEqLogo(){eqLogoData='';document.getElementById('eq-logo-url').value='';updEqPrev();}
@@ -741,12 +803,174 @@ function openMCanedit(id){const c=S.canchas.find(x=>x.id===id);if(!c)return;edit
 async function saveMCan(){const nom=document.getElementById('c-nom').value||'Campo',dir=document.getElementById('c-dir').value||'Sin dirección',map=document.getElementById('c-map').value,tipo=document.getElementById('c-tipo').value;const data={nombre:nom,direccion:dir,mapa_url:map,tipo};let error;if(editCan){({error}=await DB.from('canchas').update(data).eq('id',editCan));}else{({error}=await DB.from('canchas').insert(data));}if(error){alert('Error: '+error.message);return;}toast('✅ Cancha guardada');closeM('m-can');await loadAll();rCan();}
 async function delCan(id){if(!confirm('¿Eliminar?'))return;await DB.from('canchas').delete().eq('id',id);await loadAll();rCan();toast('🗑️ Eliminada');}
 
-// ── FOTOS ──
-function rFot(){document.getElementById('foto-tbody').innerHTML=(S.fotos||[]).length?(S.fotos||[]).map((f,i)=>`<tr><td>${i+1}</td><td><strong>${f.titulo||''}</strong></td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:var(--dm)">${f.url||'—'}</td><td>${f.tipo==='grande'?'Grande':'Normal'}</td><td><div style="display:flex;gap:5px"><button class="btn btn-gray btn-sm" onclick="openMFotoedit(${f.id})">✏️</button><button class="btn btn-red btn-sm" onclick="delFoto(${f.id})">🗑️</button></div></td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--dm);padding:16px">Sin fotos</td></tr>';}
-function openMFoto(id){editFoto=null;document.getElementById('f-tit').value='';document.getElementById('f-url').value='';document.getElementById('f-tipo').value='normal';openM('m-foto');}
-function openMFotoedit(id){const f=S.fotos.find(x=>x.id===id);if(!f)return;editFoto=id;document.getElementById('f-tit').value=f.titulo||'';document.getElementById('f-url').value=f.url||'';document.getElementById('f-tipo').value=f.tipo||'normal';openM('m-foto');}
-async function saveMFoto(){const tit=document.getElementById('f-tit').value||'Foto',url=document.getElementById('f-url').value,tipo=document.getElementById('f-tipo').value;const data={titulo:tit,url,tipo};let error;if(editFoto){({error}=await DB.from('fotos').update(data).eq('id',editFoto));}else{({error}=await DB.from('fotos').insert(data));}if(error){alert('Error: '+error.message);return;}toast('✅ Foto guardada');closeM('m-foto');await loadAll();rFot();}
-async function delFoto(id){if(!confirm('¿Eliminar?'))return;await DB.from('fotos').delete().eq('id',id);await loadAll();rFot();toast('🗑️ Eliminada');}
+// ── CATEGORY INLINE MANAGER (in Equipos panel) ──
+let catInlineList = [];
+function renderCatManager() {
+  catInlineList = [...(S.divisiones || [])];
+  document.getElementById('cat-manager-list').innerHTML = catInlineList.map((d, i) => `
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:7px">
+      <span style="background:${TC[i%TC.length]};width:12px;height:12px;border-radius:50%;display:inline-block;flex-shrink:0"></span>
+      <input type="text" class="fi2" value="${d}" onchange="catInlineList[${i}]=this.value" style="flex:1">
+      <button class="btn btn-red btn-sm" onclick="delCatInline(${i})">✕ Borrar</button>
+    </div>`).join('');
+}
+function addCatInline() { catInlineList.push('Nueva Categoría'); renderCatManager(); }
+function delCatInline(i) { catInlineList.splice(i, 1); renderCatManager(); }
+async function saveCatsInline() {
+  // Read latest values from inputs
+  const inputs = document.querySelectorAll('#cat-manager-list input[type=text]');
+  catInlineList = Array.from(inputs).map(x => x.value.trim()).filter(Boolean);
+  // Get current from Supabase
+  const { data: cur } = await DB.from('divisiones').select('nombre');
+  const curNames = (cur || []).map(d => d.nombre);
+  const toDelete = curNames.filter(n => !catInlineList.includes(n));
+  if (toDelete.length > 0) {
+    const { error } = await DB.from('divisiones').delete().in('nombre', toDelete);
+    if (error) { alert('Error borrando: ' + error.message); return; }
+  }
+  for (let i = 0; i < catInlineList.length; i++) {
+    await DB.from('divisiones').upsert({ nombre: catInlineList[i], orden: i + 1 }, { onConflict: 'nombre' });
+  }
+  toast('✅ Categorías guardadas');
+  await loadAll();
+  rEquip(); // refresh equipos panel so dtabs and eq-div select update
+}
+
+// ── FOTOS DRAG & DROP ──
+let fotoQueue = []; // {dataUrl, name}
+let fotoSingleData = ''; // base64 for single modal
+
+function fotozDragOver(e) { e.preventDefault(); document.getElementById('foto-drop-zone').style.borderColor = 'var(--az)'; document.getElementById('foto-drop-zone').style.background = '#eef2ff'; }
+function fotozDragLeave(e) { document.getElementById('foto-drop-zone').style.borderColor = 'var(--br2)'; document.getElementById('foto-drop-zone').style.background = 'var(--bg)'; }
+function fotozDrop(e) {
+  e.preventDefault();
+  fotozDragLeave(e);
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  if (files.length) processFotoFiles(files);
+}
+function fotozFileSelect(e) {
+  const files = Array.from(e.target.files);
+  if (files.length) processFotoFiles(files);
+  e.target.value = '';
+}
+function processFotoFiles(files) {
+  fotoQueue = [];
+  let loaded = 0;
+  files.forEach(file => {
+    if (file.size > 3 * 1024 * 1024) { toast('⚠️ ' + file.name + ' es muy grande (máx 3MB)'); loaded++; return; }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      fotoQueue.push({ dataUrl: ev.target.result, name: file.name.replace(/\.[^/.]+$/, '') });
+      loaded++;
+      if (loaded === files.length) renderFotoQueue();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function renderFotoQueue() {
+  if (!fotoQueue.length) return;
+  document.getElementById('foto-upload-queue').style.display = 'block';
+  document.getElementById('foto-queue-items').innerHTML = fotoQueue.map((f, i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;margin-bottom:6px;border:1px solid var(--br)">
+      <img src="${f.dataUrl}" style="width:48px;height:36px;object-fit:cover;border-radius:5px">
+      <input type="text" class="fi2" value="${f.name}" onchange="fotoQueue[${i}].name=this.value" style="flex:1;padding:7px 10px">
+      <select class="fsel" onchange="fotoQueue[${i}].tipo=this.value" style="width:120px;padding:7px 10px">
+        <option value="normal">Normal</option>
+        <option value="grande">Grande</option>
+      </select>
+      <button class="btn btn-red btn-sm" onclick="fotoQueue.splice(${i},1);renderFotoQueue()">✕</button>
+    </div>`).join('');
+}
+async function uploadQueuedFotos() {
+  if (!fotoQueue.length) return;
+  let saved = 0;
+  for (const f of fotoQueue) {
+    const { error } = await DB.from('fotos').insert({ titulo: f.name, url: f.dataUrl, tipo: f.tipo || 'normal', activa: true });
+    if (!error) saved++;
+  }
+  toast(`✅ ${saved} foto(s) guardadas`);
+  fotoQueue = [];
+  document.getElementById('foto-upload-queue').style.display = 'none';
+  await loadAll(); rFot();
+}
+function clearFotoQueue() { fotoQueue = []; document.getElementById('foto-upload-queue').style.display = 'none'; }
+
+// SINGLE FOTO MODAL
+function fotoTab(tab) {
+  document.getElementById('foto-panel-file').style.display = tab === 'file' ? 'block' : 'none';
+  document.getElementById('foto-panel-url').style.display = tab === 'url' ? 'block' : 'none';
+  document.getElementById('foto-tab-file').className = 'btn btn-sm ' + (tab === 'file' ? 'btn-blue' : 'btn-gray');
+  document.getElementById('foto-tab-url').className = 'btn btn-sm ' + (tab === 'url' ? 'btn-blue' : 'btn-gray');
+}
+function handleFotoSingle(e) {
+  const file = e.target.files[0]; if (!file) return;
+  if (file.size > 3 * 1024 * 1024) { alert('Máx 3MB'); return; }
+  const r = new FileReader();
+  r.onload = ev => {
+    fotoSingleData = ev.target.result;
+    document.getElementById('foto-single-img').src = fotoSingleData;
+    document.getElementById('foto-single-prev').style.display = 'block';
+    document.getElementById('foto-single-txt').style.display = 'none';
+    if (!document.getElementById('f-tit').value) document.getElementById('f-tit').value = file.name.replace(/\.[^/.]+$/, '');
+  };
+  r.readAsDataURL(file);
+}
+function prevFotoUrl() {
+  const url = document.getElementById('f-url').value;
+  const w = document.getElementById('f-url-prev'), i = document.getElementById('f-url-img');
+  if (url && url.startsWith('http')) { w.style.display = 'block'; i.src = url; i.onerror = () => w.style.display = 'none'; }
+  else w.style.display = 'none';
+}
+function rFot(){
+  document.getElementById('foto-tbody').innerHTML=(S.fotos||[]).length
+    ?(S.fotos||[]).map((f,i)=>`<tr>
+      <td>${i+1}</td>
+      <td>${f.url?`<img src="${f.url}" style="width:52px;height:38px;object-fit:cover;border-radius:5px;border:1px solid var(--br)" onerror="this.style.display='none'">`:'—'}</td>
+      <td><strong>${f.titulo||''}</strong></td>
+      <td>${f.tipo==='grande'?'Grande':'Normal'}</td>
+      <td><div style="display:flex;gap:5px">
+        <button class="btn btn-gray btn-sm" onclick="openMFotoedit(${f.id})">✏️</button>
+        <button class="btn btn-red btn-sm" onclick="delFoto(${f.id})">🗑️</button>
+      </div></td>
+    </tr>`).join('')
+    :'<tr><td colspan="5" style="text-align:center;color:var(--dm);padding:16px">Sin fotos — arrastra imágenes arriba</td></tr>';
+}
+function openMFoto(id){
+  editFoto=null;fotoSingleData='';
+  document.getElementById('f-tit').value='';
+  if(document.getElementById('f-url'))document.getElementById('f-url').value='';
+  document.getElementById('f-tipo').value='normal';
+  document.getElementById('foto-single-prev').style.display='none';
+  document.getElementById('foto-single-txt').style.display='block';
+  if(document.getElementById('f-url-prev'))document.getElementById('f-url-prev').style.display='none';
+  fotoTab('file');
+  openM('m-foto');
+}
+function openMFotoedit(id){
+  const f=S.fotos.find(x=>x.id===id);if(!f)return;
+  editFoto=id;fotoSingleData='';
+  document.getElementById('f-tit').value=f.titulo||'';
+  document.getElementById('f-url').value=f.url||'';
+  document.getElementById('f-tipo').value=f.tipo||'normal';
+  document.getElementById('foto-single-prev').style.display='none';
+  document.getElementById('foto-single-txt').style.display='block';
+  if(f.url){document.getElementById('f-url-prev').style.display='block';document.getElementById('f-url-img').src=f.url;}
+  fotoTab('url');
+  openM('m-foto');
+}
+async function saveMFoto(){
+  const tit=document.getElementById('f-tit').value||'Foto';
+  const tipo=document.getElementById('f-tipo').value;
+  const urlInput=document.getElementById('f-url').value.trim();
+  const url=fotoSingleData||urlInput||'';
+  const data={titulo:tit,url,tipo,activa:true};
+  let error;
+  if(editFoto){({error}=await DB.from('fotos').update(data).eq('id',editFoto));}
+  else{({error}=await DB.from('fotos').insert(data));}
+  if(error){alert('Error: '+error.message);return;}
+  toast('✅ Foto guardada');closeM('m-foto');fotoSingleData='';await loadAll();rFot();
+}
+async function delFoto(id){if(!confirm('¿Eliminar foto?'))return;await DB.from('fotos').delete().eq('id',id);await loadAll();rFot();toast('🗑️ Eliminada');}
 
 // ── BRANDING ──
 function rBranding(){
@@ -845,14 +1069,6 @@ async function saveConf(){
   toast('✅ Configuración guardada');
   await loadAll();
   rDash();
-}
-
-async function resetAll(){
-  if(!confirm('⚠️ Borrará TODOS los datos. ¿Seguro?'))return;
-  if(!confirm('Segunda confirmación — no se puede deshacer.'))return;
-  await Promise.all([DB.from('partidos').delete().neq('id',0),DB.from('equipos').delete().neq('id',0),DB.from('fotos').delete().neq('id',0)]);
-  await DB.from('jornadas').delete().neq('id',0);
-  toast('🗑️ Datos eliminados');await loadAll();rDash();
 }
 
 // ── UTILS ──
