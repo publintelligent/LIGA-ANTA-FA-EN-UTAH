@@ -275,8 +275,10 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
     <div class="panel" id="panel-branding">
       <div class="info-box">💡 Los cambios se aplican automáticamente en la app móvil de los jugadores.</div>
       <div class="brand-grid">
+
+        <!-- LOGO -->
         <div class="tw" style="padding:22px">
-          <div class="tw-hdr" style="margin:-22px -22px 18px;border-radius:10px 10px 0 0"><h3>🖼️ Logo</h3></div>
+          <div class="tw-hdr" style="margin:-22px -22px 18px;border-radius:10px 10px 0 0"><h3>🖼️ Logo de la Liga</h3></div>
           <div class="logo-up" id="logo-drop" onclick="document.getElementById('logo-file').click()">
             <input type="file" id="logo-file" accept="image/*" onchange="handleLogoFile(event)">
             <div id="logo-drop-txt"><div style="font-size:32px;margin-bottom:6px">📁</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--az)">Clic para subir logo</div><div style="font-size:12px;color:var(--dm);margin-top:3px">PNG, JPG, SVG — máx 2MB</div></div>
@@ -295,24 +297,58 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
           </div>
           <button class="btn btn-blue" style="margin-top:12px;width:100%" onclick="saveBranding()">💾 Guardar</button>
         </div>
+
+        <!-- IDENTIDAD -->
         <div class="tw" style="padding:22px">
           <div class="tw-hdr" style="margin:-22px -22px 18px;border-radius:10px 10px 0 0"><h3>🏷️ Identidad</h3></div>
-          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Nombre</label><input type="text" class="fi2" id="b-nombre" value="ANTA"></div>
+          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Nombre de la Liga</label><input type="text" class="fi2" id="b-nombre" value="ANTA" oninput="prevHdr()"></div>
           <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Subtítulo</label><input type="text" class="fi2" id="b-sub" value="Asociación Nacional de Torneos Americanos · Utah"></div>
-          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Temporada</label><input type="text" class="fi2" id="b-temp" value="2026"></div>
-          <div class="fgrp" style="margin-bottom:18px"><label class="flbl2">Emoji (si no hay logo)</label><input type="text" class="fi2" id="b-emoji" value="⚽" maxlength="4"></div>
+          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Temporada</label><input type="text" class="fi2" id="b-temp" value="2026" oninput="prevHdr()"></div>
+          <div class="fgrp" style="margin-bottom:18px"><label class="flbl2">Emoji (si no hay logo)</label><input type="text" class="fi2" id="b-emoji" value="⚽" maxlength="4" oninput="prevHdr()"></div>
           <button class="btn btn-blue" style="width:100%" onclick="saveBranding()">💾 Guardar</button>
         </div>
+
+        <!-- FUENTE -->
         <div class="tw" style="padding:22px">
-          <div class="tw-hdr" style="margin:-22px -22px 18px;border-radius:10px 10px 0 0"><h3>📞 Contacto</h3></div>
-          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Teléfono PDT</label><input type="text" class="fi2" id="b-tel" value="801-706-7199"></div>
-          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Sitio Web</label><input type="text" class="fi2" id="b-web" value="https://ligaanta.com"></div>
-          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Dirección Indoor</label><input type="text" class="fi2" id="b-ind-dir" value="3570 Galaxy Park Pl, West Jordan, UT 84088"></div>
-          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Link Maps Indoor</label><input type="text" class="fi2" id="b-ind-map" value="https://maps.google.com/?q=3570+Galaxy+Park+Pl+West+Jordan+UT+84088"></div>
-          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Dirección Outdoor</label><input type="text" class="fi2" id="b-out-dir" value="5415 W 3100 S, West Valley City, UT 84120"></div>
-          <div class="fgrp" style="margin-bottom:18px"><label class="flbl2">Link Maps Outdoor</label><input type="text" class="fi2" id="b-out-map" value="https://maps.google.com/?q=5415+W+3100+S+West+Valley+City+UT+84120"></div>
-          <button class="btn btn-blue" style="width:100%" onclick="saveBranding()">💾 Guardar</button>
+          <div class="tw-hdr" style="margin:-22px -22px 18px;border-radius:10px 10px 0 0"><h3>🔤 Fuente / Tipografía</h3></div>
+          <div class="fgrp" style="margin-bottom:14px">
+            <label class="flbl2">Fuente para títulos y nombre</label>
+            <select class="fsel" id="b-font-title" onchange="prevFont()">
+              <option value="Barlow Condensed">Barlow Condensed (actual)</option>
+              <option value="Bebas Neue">Bebas Neue — deportiva</option>
+              <option value="Oswald">Oswald — bold compacta</option>
+              <option value="Anton">Anton — ultra negrita</option>
+              <option value="Teko">Teko — moderna condensada</option>
+              <option value="Rajdhani">Rajdhani — geométrica</option>
+              <option value="Exo 2">Exo 2 — tecnológica</option>
+              <option value="Russo One">Russo One — robusta</option>
+              <option value="Black Han Sans">Black Han Sans — impacto</option>
+              <option value="Bungee">Bungee — retro urbana</option>
+            </select>
+          </div>
+          <div class="fgrp" style="margin-bottom:14px">
+            <label class="flbl2">Fuente para texto general</label>
+            <select class="fsel" id="b-font-body" onchange="prevFont()">
+              <option value="Barlow">Barlow (actual)</option>
+              <option value="Inter">Inter — clean moderna</option>
+              <option value="Nunito">Nunito — amigable</option>
+              <option value="Poppins">Poppins — geométrica</option>
+              <option value="Rubik">Rubik — redondeada</option>
+              <option value="DM Sans">DM Sans — minimalista</option>
+              <option value="Outfit">Outfit — contemporánea</option>
+              <option value="Raleway">Raleway — elegante</option>
+            </select>
+          </div>
+          <!-- FONT PREVIEW -->
+          <div id="font-preview" style="background:var(--bg);border:1px solid var(--br);border-radius:10px;padding:14px;margin-bottom:14px">
+            <div id="fp-title" style="font-size:24px;font-weight:900;color:var(--az);letter-spacing:2px;margin-bottom:4px">LIGA ANTA 2026</div>
+            <div id="fp-sub" style="font-size:13px;color:var(--dm)">Asociación Nacional de Torneos Americanos · Utah</div>
+            <div id="fp-body" style="font-size:12px;color:var(--tx);margin-top:6px">Jornada 4 · Campo 1 · 8:40 PM</div>
+          </div>
+          <button class="btn btn-blue" style="width:100%" onclick="saveBranding()">💾 Guardar Fuente</button>
         </div>
+
+        <!-- COLORES -->
         <div class="tw" style="padding:22px">
           <div class="tw-hdr" style="margin:-22px -22px 18px;border-radius:10px 10px 0 0"><h3>🎨 Colores</h3></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
@@ -321,7 +357,7 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
             <div class="fgrp"><label class="flbl2">Acento</label><div style="display:flex;gap:5px"><input type="color" id="b-c3" value="#4a7fd4" style="width:42px;height:36px;border:1px solid var(--br);border-radius:6px;cursor:pointer;padding:2px" oninput="document.getElementById('b-c3t').value=this.value"><input type="text" class="fi2" id="b-c3t" value="#4a7fd4" style="flex:1" oninput="syncC('b-c3','b-c3t')"></div></div>
           </div>
           <div style="margin-bottom:14px">
-            <div class="flbl2" style="margin-bottom:6px">Vista previa</div>
+            <div class="flbl2" style="margin-bottom:6px">Vista previa header app</div>
             <div style="border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)">
               <div id="pv-hdr" style="background:#1a3a6e;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
                 <div style="display:flex;align-items:center;gap:8px"><span id="pv-ico" style="font-size:20px">⚽</span><div><div style="font-size:8px;letter-spacing:2px;color:rgba(255,255,255,.6);font-family:'Barlow Condensed',sans-serif">Liga</div><div id="pv-nom" style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:#fff;letter-spacing:2px">ANTA</div></div></div>
@@ -335,6 +371,59 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
           </div>
           <button class="btn btn-blue" style="width:100%" onclick="saveBranding()">💾 Guardar Colores</button>
         </div>
+
+        <!-- CONTACTO -->
+        <div class="tw" style="padding:22px">
+          <div class="tw-hdr" style="margin:-22px -22px 18px;border-radius:10px 10px 0 0"><h3>📞 Contacto</h3></div>
+          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Teléfono PDT</label><input type="text" class="fi2" id="b-tel" value="801-706-7199"></div>
+          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Sitio Web</label><input type="text" class="fi2" id="b-web" value="https://ligaanta.com"></div>
+          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Dirección Indoor</label><input type="text" class="fi2" id="b-ind-dir" value="3570 Galaxy Park Pl, West Jordan, UT 84088"></div>
+          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Link Maps Indoor</label><input type="text" class="fi2" id="b-ind-map" value="https://maps.google.com/?q=3570+Galaxy+Park+Pl+West+Jordan+UT+84088"></div>
+          <div class="fgrp" style="margin-bottom:11px"><label class="flbl2">Dirección Outdoor</label><input type="text" class="fi2" id="b-out-dir" value="5415 W 3100 S, West Valley City, UT 84120"></div>
+          <div class="fgrp" style="margin-bottom:18px"><label class="flbl2">Link Maps Outdoor</label><input type="text" class="fi2" id="b-out-map" value="https://maps.google.com/?q=5415+W+3100+S+West+Valley+City+UT+84120"></div>
+          <button class="btn btn-blue" style="width:100%" onclick="saveBranding()">💾 Guardar</button>
+        </div>
+
+        <!-- ICONOS Y EMOJIS DE LA APP -->
+        <div class="tw" style="padding:22px">
+          <div class="tw-hdr" style="margin:-22px -22px 18px;border-radius:10px 10px 0 0"><h3>🎭 Íconos de la App</h3></div>
+          <p style="font-size:13px;color:var(--dm);margin-bottom:14px">Personaliza los emojis/íconos que aparecen en cada sección de la app móvil.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+            <div class="fgrp"><label class="flbl2">🏠 Tab Inicio</label><input type="text" class="fi2 icon-inp" id="ico-inicio" value="🏠" maxlength="4" oninput="prevIcons()"></div>
+            <div class="fgrp"><label class="flbl2">📅 Tab Horario</label><input type="text" class="fi2 icon-inp" id="ico-horario" value="📅" maxlength="4" oninput="prevIcons()"></div>
+            <div class="fgrp"><label class="flbl2">🏆 Tab Posiciones</label><input type="text" class="fi2 icon-inp" id="ico-posiciones" value="🏆" maxlength="4" oninput="prevIcons()"></div>
+            <div class="fgrp"><label class="flbl2">📸 Tab Fotos</label><input type="text" class="fi2 icon-inp" id="ico-fotos" value="📸" maxlength="4" oninput="prevIcons()"></div>
+            <div class="fgrp"><label class="flbl2">📍 Tab Canchas</label><input type="text" class="fi2 icon-inp" id="ico-canchas" value="📍" maxlength="4" oninput="prevIcons()"></div>
+            <div class="fgrp"><label class="flbl2">⚽ Ícono Liga</label><input type="text" class="fi2 icon-inp" id="ico-liga" value="⚽" maxlength="4" oninput="prevHdr()"></div>
+            <div class="fgrp"><label class="flbl2">🏟️ Campo Indoor</label><input type="text" class="fi2 icon-inp" id="ico-indoor" value="🏟️" maxlength="4"></div>
+            <div class="fgrp"><label class="flbl2">⛳ Campo Outdoor</label><input type="text" class="fi2 icon-inp" id="ico-outdoor" value="⛳" maxlength="4"></div>
+          </div>
+          <!-- ICON PREVIEW -->
+          <div id="icon-preview" style="background:var(--az);border-radius:8px;padding:8px 12px;display:flex;gap:4px;justify-content:space-around;margin-bottom:14px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span id="pv-ico-inicio" style="font-size:20px">🏠</span>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:rgba(255,255,255,.9);font-weight:700;letter-spacing:.3px;text-transform:uppercase">Inicio</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span id="pv-ico-horario" style="font-size:20px">📅</span>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:rgba(255,255,255,.9);font-weight:700;letter-spacing:.3px;text-transform:uppercase">Horario</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span id="pv-ico-posiciones" style="font-size:20px">🏆</span>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:rgba(255,255,255,.9);font-weight:700;letter-spacing:.3px;text-transform:uppercase">Tabla</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span id="pv-ico-fotos" style="font-size:20px">📸</span>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:rgba(255,255,255,.9);font-weight:700;letter-spacing:.3px;text-transform:uppercase">Fotos</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span id="pv-ico-canchas" style="font-size:20px">📍</span>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:rgba(255,255,255,.9);font-weight:700;letter-spacing:.3px;text-transform:uppercase">Canchas</span>
+            </div>
+          </div>
+          <button class="btn btn-blue" style="width:100%" onclick="saveBranding()">💾 Guardar Íconos</button>
+        </div>
+
       </div>
     </div>
 
@@ -973,6 +1062,59 @@ async function saveMFoto(){
 async function delFoto(id){if(!confirm('¿Eliminar foto?'))return;await DB.from('fotos').delete().eq('id',id);await loadAll();rFot();toast('🗑️ Eliminada');}
 
 // ── BRANDING ──
+const FONT_IMPORTS = {
+  'Bebas Neue':'https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap',
+  'Oswald':'https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap',
+  'Anton':'https://fonts.googleapis.com/css2?family=Anton&display=swap',
+  'Teko':'https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&display=swap',
+  'Rajdhani':'https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap',
+  'Exo 2':'https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&display=swap',
+  'Russo One':'https://fonts.googleapis.com/css2?family=Russo+One&display=swap',
+  'Black Han Sans':'https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap',
+  'Bungee':'https://fonts.googleapis.com/css2?family=Bungee&display=swap',
+  'Inter':'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap',
+  'Nunito':'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap',
+  'Poppins':'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap',
+  'Rubik':'https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap',
+  'DM Sans':'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap',
+  'Outfit':'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap',
+  'Raleway':'https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap',
+};
+
+function loadGFont(family){
+  if(!family||['Barlow Condensed','Barlow'].includes(family))return;
+  const url=FONT_IMPORTS[family];if(!url)return;
+  if(!document.querySelector(`link[href="${url}"]`)){
+    const l=document.createElement('link');l.rel='stylesheet';l.href=url;document.head.appendChild(l);
+  }
+}
+
+function prevFont(){
+  const ft=document.getElementById('b-font-title')?.value||'Barlow Condensed';
+  const fb=document.getElementById('b-font-body')?.value||'Barlow';
+  loadGFont(ft); loadGFont(fb);
+  setTimeout(()=>{
+    const t=document.getElementById('fp-title');
+    const s=document.getElementById('fp-sub');
+    const b=document.getElementById('fp-body');
+    if(t)t.style.fontFamily=`'${ft}',sans-serif`;
+    if(s)s.style.fontFamily=`'${fb}',sans-serif`;
+    if(b)b.style.fontFamily=`'${fb}',sans-serif`;
+    // also update header preview
+    const pn=document.getElementById('pv-nom');
+    if(pn)pn.style.fontFamily=`'${ft}',sans-serif`;
+  },300);
+}
+
+function prevIcons(){
+  const ids=['inicio','horario','posiciones','fotos','canchas'];
+  ids.forEach(id=>{
+    const inp=document.getElementById('ico-'+id);
+    const pv=document.getElementById('pv-ico-'+id);
+    if(inp&&pv) pv.textContent=inp.value||'⚽';
+  });
+}
+
 function rBranding(){
   const b=S.branding||{};
   document.getElementById('b-nombre').value=b.nombre||'ANTA';
@@ -989,8 +1131,21 @@ function rBranding(){
   if(b.color1){document.getElementById('b-c1').value=b.color1;document.getElementById('b-c1t').value=b.color1;}
   if(b.color2){document.getElementById('b-c2').value=b.color2;document.getElementById('b-c2t').value=b.color2;}
   if(b.color3){document.getElementById('b-c3').value=b.color3;document.getElementById('b-c3t').value=b.color3;}
+  // Fonts
+  if(b.fontTitle) document.getElementById('b-font-title').value=b.fontTitle;
+  if(b.fontBody) document.getElementById('b-font-body').value=b.fontBody;
+  // Icons
+  const icons=b.icons||{};
+  document.getElementById('ico-inicio').value=icons.inicio||'🏠';
+  document.getElementById('ico-horario').value=icons.horario||'📅';
+  document.getElementById('ico-posiciones').value=icons.posiciones||'🏆';
+  document.getElementById('ico-fotos').value=icons.fotos||'📸';
+  document.getElementById('ico-canchas').value=icons.canchas||'📍';
+  document.getElementById('ico-liga').value=icons.liga||'⚽';
+  document.getElementById('ico-indoor').value=icons.indoor||'🏟️';
+  document.getElementById('ico-outdoor').value=icons.outdoor||'⛳';
   if(b.logo){document.getElementById('logo-prev').src=b.logo;document.getElementById('logo-prev-w').style.display='block';}
-  prevLogoUrl(); prevHdr();
+  prevLogoUrl(); prevHdr(); prevFont(); prevIcons();
 }
 function handleLogoFile(e){const f=e.target.files[0];if(!f)return;if(f.size>2*1024*1024){alert('Máx 2MB');return;}const r=new FileReader();r.onload=ev=>{ligaLogoData=ev.target.result;document.getElementById('logo-prev').src=ligaLogoData;document.getElementById('logo-prev-w').style.display='block';document.getElementById('b-logo-url').value='';};r.readAsDataURL(f);}
 async function saveLogoFile(){if(!ligaLogoData){toast('Selecciona un archivo primero');return;}await _saveBrand({logo:ligaLogoData});}
@@ -1000,7 +1155,35 @@ function prevHdr(){const c1=document.getElementById('b-c1')?.value||'#1a3a6e';co
 function syncC(pid,tid){const t=document.getElementById(tid).value;if(/^#[0-9a-fA-F]{6}$/.test(t)){document.getElementById(pid).value=t;prevHdr();}}
 async function saveBranding(){const urlInput=document.getElementById('b-logo-url').value.trim();const logo=ligaLogoData||urlInput||S.branding?.logo||'';await _saveBrand({logo});}
 async function _saveBrand(extra){
-  const b={nombre:document.getElementById('b-nombre').value||'ANTA',subtitulo:document.getElementById('b-sub').value||'',temporada:document.getElementById('b-temp').value||'2026',emoji:document.getElementById('b-emoji').value||'⚽',tel:document.getElementById('b-tel').value||'',web:document.getElementById('b-web').value||'',indoorDir:document.getElementById('b-ind-dir').value||'',indoorMap:document.getElementById('b-ind-map').value||'',outdoorDir:document.getElementById('b-out-dir').value||'',outdoorMap:document.getElementById('b-out-map').value||'',color1:document.getElementById('b-c1').value,color2:document.getElementById('b-c2').value,color3:document.getElementById('b-c3').value,...extra};
+  const icons={
+    inicio:document.getElementById('ico-inicio')?.value||'🏠',
+    horario:document.getElementById('ico-horario')?.value||'📅',
+    posiciones:document.getElementById('ico-posiciones')?.value||'🏆',
+    fotos:document.getElementById('ico-fotos')?.value||'📸',
+    canchas:document.getElementById('ico-canchas')?.value||'📍',
+    liga:document.getElementById('ico-liga')?.value||'⚽',
+    indoor:document.getElementById('ico-indoor')?.value||'🏟️',
+    outdoor:document.getElementById('ico-outdoor')?.value||'⛳',
+  };
+  const b={
+    nombre:document.getElementById('b-nombre').value||'ANTA',
+    subtitulo:document.getElementById('b-sub').value||'',
+    temporada:document.getElementById('b-temp').value||'2026',
+    emoji:document.getElementById('b-emoji').value||'⚽',
+    tel:document.getElementById('b-tel').value||'',
+    web:document.getElementById('b-web').value||'',
+    indoorDir:document.getElementById('b-ind-dir').value||'',
+    indoorMap:document.getElementById('b-ind-map').value||'',
+    outdoorDir:document.getElementById('b-out-dir').value||'',
+    outdoorMap:document.getElementById('b-out-map').value||'',
+    color1:document.getElementById('b-c1').value,
+    color2:document.getElementById('b-c2').value,
+    color3:document.getElementById('b-c3').value,
+    fontTitle:document.getElementById('b-font-title')?.value||'Barlow Condensed',
+    fontBody:document.getElementById('b-font-body')?.value||'Barlow',
+    icons,
+    ...extra
+  };
   const{error}=await DB.from('config').upsert({key:'branding',value:b});
   if(error){alert('Error: '+error.message);return;}
   S.branding=b;ligaLogoData='';applyBrandUI();toast('✅ Branding guardado');
