@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a3a6e">
+<title>Liga ANTA</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --azul: #1a3a6e;
+    --azul-mid: #2a5298;
+    --azul-claro: #4a7fd4;
+    --azul-link: #3a6abf;
+    --blanco: #ffffff;
+    --fondo: #f4f6fa;
+    --borde: #dde3ef;
+    --borde2: #c8d0e4;
+    --rowalt: #f0f3f9;
+    --texto: #1a1a2e;
+    --dim: #6a7a9a;
+    --rojo: #c0392b;
+    --verde: #1a7a3a;
+    --dorado: #c8a020;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { font-family:'Barlow',sans-serif; background:var(--blanco); color:var(--texto); min-height:100vh; max-width:430px; margin:0 auto; overflow-x:hidden; }
+
+  /* LOADING */
+  .loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,.92); z-index:500; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
+  .loading-overlay.hidden { display:none; }
+  .spinner { width:40px; height:40px; border:3px solid var(--borde); border-top-color:var(--azul); border-radius:50%; animation:spin .7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .load-txt { font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; color:var(--dim); letter-spacing:1px; }
+
+  /* NO CONFIG BANNER */
+  .no-config { background:var(--rojo); color:#fff; padding:10px 16px; font-size:12px; font-weight:600; text-align:center; display:none; }
+
+  .header { background:var(--azul); padding:14px 18px 12px; position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(26,58,110,.25); }
+  .logo-wrap { display:flex; align-items:center; gap:10px; }
+  .logo-txt .sup { font-size:9px; letter-spacing:3px; color:rgba(255,255,255,.65); font-family:'Barlow Condensed',sans-serif; font-weight:700; text-transform:uppercase; }
+  .logo-txt .main { font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:900; color:#fff; letter-spacing:3px; line-height:1; }
+  .logo-ball { font-size:28px; }
+  .logo-img { height:38px; width:auto; object-fit:contain; display:none; }
+  .hdr-right { text-align:right; }
+  .hdr-right .lbl { font-size:9px; letter-spacing:2px; color:rgba(255,255,255,.55); font-family:'Barlow Condensed',sans-serif; font-weight:600; text-transform:uppercase; }
+  .hdr-right .val { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:900; color:rgba(255,255,255,.9); line-height:1; }
+
+  .nav { display:flex; background:var(--azul-mid); overflow-x:auto; scrollbar-width:none; box-shadow:0 2px 4px rgba(0,0,0,.15); }
+  .nav::-webkit-scrollbar { display:none; }
+  .nb { flex:0 0 auto; padding:11px 14px; font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:rgba(255,255,255,.65); background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; transition:all .2s; white-space:nowrap; }
+  .nb.active { color:#fff; border-bottom-color:rgba(255,255,255,.9); }
+
+  .sec { display:none; padding:16px; animation:fi .2s ease; }
+  .sec.active { display:block; }
+  @keyframes fi { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
+
+  .stitle { font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--azul); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .stitle::after { content:''; flex:1; height:2px; background:var(--borde); }
+
+  .pdt-card { background:var(--fondo); border:1px solid var(--borde); border-radius:12px; padding:18px; margin-bottom:16px; border-left:4px solid var(--azul); }
+  .pdt-liga { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:900; color:var(--azul); letter-spacing:2px; margin-bottom:2px; }
+  .pdt-sub { font-size:12px; color:var(--dim); margin-bottom:14px; }
+  .ci-list { display:flex; flex-direction:column; gap:8px; }
+  .ci { display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--borde); border-radius:8px; padding:10px 14px; }
+  .ci-ico { font-size:16px; width:22px; text-align:center; }
+  .ci-lbl { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dim); font-weight:600; }
+  .ci-val { font-size:14px; font-weight:600; color:var(--texto); }
+  .ci-val a { color:var(--azul-link); text-decoration:none; font-weight:700; }
+
+  .campos-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+  .campo-card { background:#fff; border:1px solid var(--borde); border-radius:10px; padding:14px 12px; text-align:center; border-top:3px solid var(--azul); }
+  .campo-tipo { font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--azul); margin-bottom:6px; }
+  .campo-dir { font-size:11px; color:var(--dim); line-height:1.5; margin-bottom:10px; }
+  .campo-link { display:inline-block; background:var(--azul); color:#fff; text-decoration:none; font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; padding:6px 14px; border-radius:6px; }
+
+  .cat-block { margin-bottom:24px; }
+  .cat-title { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:900; color:var(--azul); text-align:center; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; padding:8px; border-bottom:2px solid var(--azul); }
+  .hor-table-wrap { border:1px solid var(--borde); border-radius:8px; overflow:hidden; margin-bottom:14px; }
+  .hor-sub-lbl { background:var(--fondo); padding:8px 14px; font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--azul-mid); border-bottom:1px solid var(--borde); }
+  table.hor { width:100%; border-collapse:collapse; }
+  table.hor thead tr { background:var(--azul); }
+  table.hor thead th { padding:9px 10px; font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#fff; text-align:left; }
+  table.hor tbody tr { border-bottom:1px solid var(--borde); transition:background .1s; }
+  table.hor tbody tr:last-child { border-bottom:none; }
+  table.hor tbody tr:hover { background:var(--fondo); }
+  table.hor tbody td { padding:9px 10px; font-size:12px; }
+  table.hor tbody td.eq-win { font-weight:800; color:var(--verde); }
+  .pend-badge { background:var(--fondo); color:var(--dim); font-size:10px; padding:2px 6px; border-radius:4px; font-family:'Barlow Condensed',sans-serif; font-weight:700; letter-spacing:1px; }
+
+  .jorn-sel { display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; scrollbar-width:none; }
+  .jorn-sel::-webkit-scrollbar { display:none; }
+  .jbtn { flex:0 0 auto; background:#fff; border:1px solid var(--borde); color:var(--dim); font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; padding:6px 12px; border-radius:6px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+  .jbtn.active { background:var(--azul); color:#fff; border-color:var(--azul); }
+
+  .chips { display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; scrollbar-width:none; }
+  .chips::-webkit-scrollbar { display:none; }
+  .chip { flex:0 0 auto; background:#fff; border:1px solid var(--borde); color:var(--dim); font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; padding:5px 12px; border-radius:20px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+  .chip.active { background:var(--azul); color:#fff; border-color:var(--azul); }
+
+  .pos-table-wrap { border:1px solid var(--borde); border-radius:8px; overflow:hidden; margin-bottom:20px; }
+  .pos-cat-title { background:var(--azul); padding:10px 14px; font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:#fff; }
+  table.pos { width:100%; border-collapse:collapse; }
+  table.pos thead tr { background:var(--rowalt); }
+  table.pos thead th { padding:8px 10px; font-family:'Barlow Condensed',sans-serif; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--azul); border-bottom:2px solid var(--borde); text-align:center; }
+  table.pos thead th.lt { text-align:left; }
+  table.pos tbody tr { border-bottom:1px solid var(--borde); }
+  table.pos tbody tr:last-child { border-bottom:none; }
+  table.pos tbody tr.top1 { background:linear-gradient(90deg,rgba(26,58,110,.07) 0%,transparent 70%); }
+  table.pos tbody td { padding:9px 10px; font-size:12px; text-align:center; }
+  table.pos tbody td.lt { text-align:left; font-weight:600; }
+  table.pos tbody td.pos-num { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:14px; color:var(--dim); }
+  table.pos tbody td.pts-val { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:16px; color:var(--azul); }
+  .gold-pos { display:inline-block; width:20px; height:20px; border-radius:50%; background:var(--dorado); color:#fff; font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:11px; line-height:20px; text-align:center; }
+
+  .cc { background:#fff; border:1px solid var(--borde); border-radius:10px; padding:14px; margin-bottom:10px; display:flex; align-items:center; gap:12px; border-left:3px solid var(--azul); }
+  .cc-ico { width:44px; height:44px; background:var(--fondo); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; border:1px solid var(--borde); }
+  .cc-nom { font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:800; color:var(--azul); }
+  .cc-dir { font-size:11px; color:var(--dim); margin-top:2px; }
+  .cc-link { margin-left:auto; background:var(--azul); color:#fff; border-radius:7px; padding:8px 12px; font-size:15px; text-decoration:none; flex-shrink:0; }
+
+  .fg { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .fi { border-radius:8px; overflow:hidden; background:var(--fondo); aspect-ratio:4/3; position:relative; border:1px solid var(--borde); cursor:pointer; }
+  .fi img { width:100%; height:100%; object-fit:cover; }
+  .fi-ph { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:var(--dim); font-size:24px; }
+  .fi-lbl { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(26,58,110,.85)); padding:14px 8px 7px; font-size:11px; font-family:'Barlow Condensed',sans-serif; font-weight:700; color:#fff; }
+  .fi.g { grid-column:span 2; aspect-ratio:16/9; }
+
+  .mo { display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:200; align-items:center; justify-content:center; padding:20px; }
+  .mo.open { display:flex; }
+  .mo img { max-width:100%; max-height:80vh; border-radius:10px; object-fit:contain; }
+  .mx { position:absolute; top:16px; right:16px; background:rgba(255,255,255,.2); border:none; color:#fff; font-size:20px; width:38px; height:38px; border-radius:50%; cursor:pointer; }
+
+  .empty { text-align:center; padding:40px 20px; color:var(--dim); }
+  .empty .big { font-size:40px; margin-bottom:10px; }
+
+  /* REALTIME DOT */
+  .rt-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:#22c55e; margin-left:6px; animation:rtpulse 2s infinite; }
+  @keyframes rtpulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+</style>
+</head>
+<body>
+
+<!-- ⚠️ CONFIGURACIÓN — reemplaza con tus credenciales de Supabase -->
+<script>
+  const SUPABASE_URL = 'https://bkppbfmolvgubhoilggy.supabase.co';       // ej: https://abcdef.supabase.co
+  const SUPABASE_ANON_KEY = 'sb_publishable_bRj5okEQwcbYsINR3auVwQ_sHCpvh2H';       // clave anon/public de Supabase
+  const CONFIG_OK = true;
+</script>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="load-txt">Cargando Liga ANTA...</div>
+</div>
+
+<div class="no-config" id="no-config-banner">
+  ⚠️ App no configurada — abre el backoffice y configura las credenciales de Supabase
+</div>
+
+<div class="header">
+  <div class="logo-wrap">
+    <img id="hdr-logo-img" class="logo-img" src="" alt="Logo">
+    <div id="hdr-ball" class="logo-ball">⚽</div>
+    <div class="logo-txt">
+      <div class="sup">Liga</div>
+      <div class="main" id="hdr-nombre">ANTA</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="lbl">Temporada</div>
+    <div class="val" id="hdr-temp">2026<span class="rt-dot" id="rt-dot" style="display:none"></span></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nb active" onclick="setTab('inicio',this)">🏠 Inicio</button>
+  <button class="nb" onclick="setTab('horario',this)">📅 Horario</button>
+  <button class="nb" onclick="setTab('posiciones',this)">🏆 Posiciones</button>
+  <button class="nb" onclick="setTab('fotos',this)">📸 Fotos</button>
+  <button class="nb" onclick="setTab('canchas',this)">📍 Canchas</button>
+</nav>
+
+<div class="sec active" id="tab-inicio">
+  <div class="pdt-card">
+    <div class="pdt-liga" id="ini-liga">⚽ Liga ANTA</div>
+    <div class="pdt-sub" id="ini-sub">Asociación Nacional de Torneos Americanos · Utah 2026</div>
+    <div class="ci-list">
+      <div class="ci">
+        <div class="ci-ico">📞</div>
+        <div><div class="ci-lbl">Contacto / PDT</div><div class="ci-val"><a id="ini-tel" href="tel:8017067199"><span id="ini-tel-v">801-706-7199</span></a></div></div>
+      </div>
+      <div class="ci">
+        <div class="ci-ico">🌐</div>
+        <div><div class="ci-lbl">Sitio Web</div><div class="ci-val"><a id="ini-web" href="https://ligaanta.com" target="_blank"><span id="ini-web-v">ligaanta.com</span></a></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="stitle">📍 Campos de Juego</div>
+  <div class="campos-grid">
+    <div class="campo-card">
+      <div class="campo-tipo">🏟️ Indoor</div>
+      <div class="campo-dir" id="ini-indoor-dir">3570 Galaxy Park Pl,<br>West Jordan, UT 84088</div>
+      <a class="campo-link" id="ini-indoor-map" href="#" target="_blank">Ver Mapa</a>
+    </div>
+    <div class="campo-card">
+      <div class="campo-tipo">⛳ Outdoor</div>
+      <div class="campo-dir" id="ini-outdoor-dir">5415 W 3100 S,<br>West Valley City, UT 84120</div>
+      <a class="campo-link" id="ini-outdoor-map" href="#" target="_blank">Ver Mapa</a>
+    </div>
+  </div>
+  <div class="stitle">📋 Categorías</div>
+  <div id="cats-info"></div>
+</div>
+
+<div class="sec" id="tab-horario">
+  <div class="chips" id="hor-chips"></div>
+  <div class="jorn-sel" id="jorn-sel"></div>
+  <div id="hor-cont"></div>
+</div>
+
+<div class="sec" id="tab-posiciones">
+  <div id="pos-cont"></div>
+</div>
+
+<div class="sec" id="tab-fotos">
+  <div class="stitle">Galería de Juegos</div>
+  <div class="fg" id="fotos-cont"></div>
+</div>
+
+<div class="sec" id="tab-canchas">
+  <div class="stitle">Campos de Juego</div>
+  <div id="can-cont"></div>
+</div>
+
+<div class="mo" id="modal" onclick="closeMod()">
+  <button class="mx">✕</button>
+  <img id="modal-img" src="" alt="">
+</div>
+
+<script>
+// ── STATE ──
+let DB = null;
+let STATE = {
+  branding:{}, divisiones:[], equipos:{}, jornadas:[], partidos:[], canchas:[], fotos:[]
+};
+let at='inicio', hDiv=null, hJorn=null;
+
+// ── INIT ──
+async function init() {
+  if (!CONFIG_OK) {
+    document.getElementById('no-config-banner').style.display='block';
+    document.getElementById('loading').classList.add('hidden');
+    return;
+  }
+  DB = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  await loadAll();
+  subscribeRealtime();
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('rt-dot').style.display='inline-block';
+  render();
+}
+
+async function loadAll() {
+  const [cfg, divs, eqs, jorns, parts, canchas, fotos] = await Promise.all([
+    DB.from('config').select('key,value'),
+    DB.from('divisiones').select('*').order('orden'),
+    DB.from('equipos').select('*'),
+    DB.from('jornadas').select('*').order('numero', {ascending:false}),
+    DB.from('partidos').select('*'),
+    DB.from('canchas').select('*').order('orden'),
+    DB.from('fotos').select('*').order('orden'),
+  ]);
+
+  // Config / branding
+  const cfgMap = {};
+  (cfg.data||[]).forEach(r => cfgMap[r.key] = r.value);
+  STATE.branding = cfgMap.branding || {};
+
+  // Divisiones
+  STATE.divisiones = (divs.data||[]).map(d=>d.nombre);
+
+  // Equipos por división
+  STATE.equipos = {};
+  (eqs.data||[]).forEach(e => {
+    if(!STATE.equipos[e.division]) STATE.equipos[e.division]=[];
+    STATE.equipos[e.division].push(e);
+  });
+
+  // Jornadas
+  STATE.jornadas = jorns.data || [];
+
+  // Partidos agrupados por jornada
+  STATE.partidos = parts.data || [];
+
+  // Canchas
+  STATE.canchas = canchas.data || [];
+
+  // Fotos
+  STATE.fotos = (fotos.data||[]).filter(f=>f.activa!==false);
+}
+
+// ── REALTIME ──
+function subscribeRealtime() {
+  DB.channel('liga-anta-changes')
+    .on('postgres_changes', {event:'*', schema:'public'}, async () => {
+      await loadAll();
+      applyBranding();
+      render();
+    })
+    .subscribe();
+}
+
+// ── BRANDING ──
+function applyBranding() {
+  const b = STATE.branding || {};
+  if(b.color1) document.documentElement.style.setProperty('--azul', b.color1);
+  if(b.color2) document.documentElement.style.setProperty('--azul-mid', b.color2);
+  if(b.color3) document.documentElement.style.setProperty('--azul-claro', b.color3);
+
+  const li = document.getElementById('hdr-logo-img');
+  const lb = document.getElementById('hdr-ball');
+  if(b.logo && b.logo.startsWith('http')) {
+    li.src=b.logo; li.style.display='block'; lb.style.display='none';
+  } else {
+    lb.textContent=b.emoji||'⚽'; lb.style.display='block'; li.style.display='none';
+  }
+  const hn=document.getElementById('hdr-nombre'); if(hn) hn.textContent=b.nombre||'ANTA';
+  const ht=document.getElementById('hdr-temp'); if(ht) ht.innerHTML=(b.temporada||'2026')+'<span class="rt-dot"></span>';
+  const il=document.getElementById('ini-liga'); if(il) il.textContent='⚽ Liga '+(b.nombre||'ANTA');
+  const is=document.getElementById('ini-sub'); if(is) is.textContent=b.subtitulo||'';
+  const itl=document.getElementById('ini-tel'); if(itl) itl.href='tel:'+(b.tel||'').replace(/\D/g,'');
+  const itv=document.getElementById('ini-tel-v'); if(itv) itv.textContent=b.tel||'';
+  const iw=document.getElementById('ini-web'); if(iw) iw.href=b.web||'#';
+  const iwv=document.getElementById('ini-web-v'); if(iwv) iwv.textContent=(b.web||'').replace('https://','');
+  const iid=document.getElementById('ini-indoor-dir'); if(iid) iid.innerHTML=(b.indoorDir||'').replace(', ',',<br>');
+  const iim=document.getElementById('ini-indoor-map'); if(iim) iim.href=b.indoorMap||'#';
+  const iod=document.getElementById('ini-outdoor-dir'); if(iod) iod.innerHTML=(b.outdoorDir||'').replace(', ',',<br>');
+  const iom=document.getElementById('ini-outdoor-map'); if(iom) iom.href=b.outdoorMap||'#';
+}
+
+// ── TABS ──
+function setTab(t,b){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active'); b.classList.add('active');
+  at=t; render();
+}
+
+function render(){
+  applyBranding();
+  if(at==='inicio') rInicio();
+  if(at==='horario') rHorario();
+  if(at==='posiciones') rPos();
+  if(at==='fotos') rFotos();
+  if(at==='canchas') rCanchas();
+}
+
+// ── INICIO ──
+function rInicio(){
+  const divs=STATE.divisiones||[];
+  document.getElementById('cats-info').innerHTML=divs.map(d=>`
+    <div style="background:#fff;border:1px solid var(--borde);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;border-left:3px solid var(--azul)">
+      <div style="font-size:18px">⚽</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--azul)">${d}</div>
+    </div>`).join('');
+}
+
+// ── HORARIO ──
+function setHDiv(d){hDiv=d;hJorn=null;rHorario();}
+function setHJorn(id){hJorn=id;rHorario();}
+
+function rHorario(){
+  const divs=STATE.divisiones||[];
+  if(!hDiv) hDiv=divs[0];
+  document.getElementById('hor-chips').innerHTML=divs.map(d=>
+    `<button class="chip ${d===hDiv?'active':''}" onclick="setHDiv('${esc(d)}')">${d}</button>`).join('');
+
+  // Jornadas que tienen partidos de esta división
+  const partsDivAll=STATE.partidos.filter(p=>p.division===hDiv);
+  const jornadasIds=[...new Set(partsDivAll.map(p=>p.jornada_id))];
+  const jornadasDiv=STATE.jornadas.filter(j=>jornadasIds.includes(j.id)).sort((a,b)=>b.numero-a.numero);
+
+  if(!jornadasDiv.length){
+    document.getElementById('jorn-sel').innerHTML='';
+    document.getElementById('hor-cont').innerHTML=`<div class="empty"><div class="big">📅</div><p>Sin partidos en esta categoría</p></div>`;
+    return;
+  }
+
+  if(!hJorn||!jornadasDiv.find(j=>j.id===hJorn)) hJorn=jornadasDiv[0].id;
+  document.getElementById('jorn-sel').innerHTML=jornadasDiv.map(j=>
+    `<button class="jbtn ${j.id===hJorn?'active':''}" onclick="setHJorn(${j.id})">J${j.numero} – ${j.fecha.split(' ').slice(0,2).join(' ')}</button>`).join('');
+
+  const jornada=jornadasDiv.find(j=>j.id===hJorn);
+  const partsJ=STATE.partidos.filter(p=>p.jornada_id===hJorn&&p.division===hDiv).sort((a,b)=>a.hora.localeCompare(b.hora));
+
+  // Agrupar por campo
+  const campos={};
+  partsJ.forEach(p=>{if(!campos[p.campo])campos[p.campo]=[];campos[p.campo].push(p);});
+
+  const fechaShort=jornada.fecha.split(' ').slice(0,3).join(' ').toUpperCase();
+
+  let html=`<div class="cat-block">
+    <div class="cat-title">${hDiv}</div>`;
+  Object.entries(campos).forEach(([campo,partidos])=>{
+    html+=`<div class="hor-table-wrap">
+      <div class="hor-sub-lbl">${campo}</div>
+      <table class="hor">
+        <thead><tr><th>Campo</th><th>Hora</th><th>Equipo 1</th><th>Equipo 2</th><th>Fecha</th><th>Res.</th></tr></thead>
+        <tbody>`;
+    partidos.forEach(p=>{
+      const lW=p.jugado&&p.goles_local>p.goles_visitante;
+      const vW=p.jugado&&p.goles_visitante>p.goles_local;
+      html+=`<tr>
+        <td style="font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--azul)">${p.campo.split(' ').pop()}</td>
+        <td style="color:var(--dim);font-size:11px">${p.hora}</td>
+        <td class="${lW?'eq-win':''}">${p.local}</td>
+        <td class="${vW?'eq-win':''}">${p.visitante}</td>
+        <td style="font-size:11px;color:var(--dim)">${fechaShort}</td>
+        <td>${p.jugado
+          ?`<span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14px">${p.goles_local}–${p.goles_visitante}</span>`
+          :`<span class="pend-badge">VS</span>`}</td>
+      </tr>`;
+    });
+    html+=`</tbody></table></div>`;
+  });
+  html+=`</div>`;
+  document.getElementById('hor-cont').innerHTML=html;
+}
+
+// ── POSICIONES ──
+function rPos(){
+  const divs=STATE.divisiones||[];
+  let html='';
+  divs.forEach(div=>{
+    const eqs=[...(STATE.equipos[div]||[])].map(e=>({...e,pts:e.pg*3+e.pe})).sort((a,b)=>b.pts-a.pts||(b.gf-b.gc)-(a.gf-a.gc));
+    if(!eqs.length) return;
+    html+=`<div class="pos-table-wrap">
+      <div class="pos-cat-title">${div}</div>
+      <table class="pos">
+        <thead><tr>
+          <th class="lt">#</th><th class="lt">Equipo</th>
+          <th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th>
+        </tr></thead>
+        <tbody>${eqs.map((e,i)=>`<tr class="${i===0?'top1':''}">
+          <td class="pos-num">${i===0?`<span class="gold-pos">1</span>`:i+1}</td>
+          <td class="lt">${e.nombre}</td>
+          <td>${e.pj}</td><td>${e.pg}</td><td>${e.pe}</td><td>${e.pp}</td>
+          <td>${e.gf}</td><td>${e.gc}</td>
+          <td style="color:${e.gf-e.gc>0?'var(--verde)':e.gf-e.gc<0?'var(--rojo)':'var(--dim)'}">${e.gf-e.gc>0?'+':''}${e.gf-e.gc}</td>
+          <td class="pts-val">${e.pts}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+  });
+  document.getElementById('pos-cont').innerHTML=html||`<div class="empty"><div class="big">🏆</div><p>Sin datos</p></div>`;
+}
+
+// ── FOTOS ──
+function rFotos(){
+  const f=STATE.fotos||[];
+  const c=document.getElementById('fotos-cont');
+  c.innerHTML=f.length?f.map(x=>x.url
+    ?`<div class="fi ${x.tipo==='grande'?'g':''}" onclick="openMod('${x.url}')"><img src="${x.url}" loading="lazy"><div class="fi-lbl">${x.titulo}</div></div>`
+    :`<div class="fi ${x.tipo==='grande'?'g':''}"><div class="fi-ph">📷<span style="font-size:11px;font-family:'Barlow Condensed'">${x.titulo}</span></div></div>`
+  ).join(''):`<div style="grid-column:span 2" class="empty"><div class="big">📸</div><p>Sin fotos</p></div>`;
+}
+
+// ── CANCHAS ──
+function rCanchas(){
+  const cc=STATE.canchas||[];
+  const icos=['🏟️','⛳','📍'];
+  document.getElementById('can-cont').innerHTML=cc.length
+    ?cc.map((c,i)=>`<div class="cc"><div class="cc-ico">${icos[i]||'📍'}</div><div><div class="cc-nom">${c.nombre}</div><div class="cc-dir">${c.direccion}</div></div>${c.mapa_url?`<a href="${c.mapa_url}" target="_blank" class="cc-link">🗺️</a>`:''}</div>`).join('')
+    :`<div class="empty"><div class="big">📍</div><p>Sin canchas</p></div>`;
+}
+
+function openMod(u){document.getElementById('modal-img').src=u;document.getElementById('modal').classList.add('open');}
+function closeMod(){document.getElementById('modal').classList.remove('open');}
+function esc(s){return s.replace(/'/g,"\\'");}
+
+init();
+</script>
+</body>
+</html>
