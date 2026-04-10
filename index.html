@@ -12,6 +12,8 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html{height:100%;}
 body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);max-width:430px;margin:0 auto;height:100%;display:flex;flex-direction:column;}
+
+/* LOADER */
 .lov{position:fixed;inset:0;background:#fff;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
 .lov.gone{display:none;}
 .sp{width:44px;height:44px;border:3px solid var(--br);border-top-color:var(--az);border-radius:50%;animation:spin .7s linear infinite;}
@@ -31,7 +33,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);max-wi
 .ldot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-left:4px;animation:lp 2s infinite;}
 @keyframes lp{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* SCROLL AREA */
+/* SCROLL */
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
 /* BOTTOM NAV */
@@ -48,19 +50,13 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);max-wi
 .page{display:none;animation:pi .2s ease;}
 .page.on{display:block;}
 @keyframes pi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.pad{padding:14px;}
 
-/* PAGE BANNER */
+/* BANNER */
 .banner{background:linear-gradient(135deg,var(--az) 0%,var(--az2) 100%);padding:18px 16px 16px;color:#fff;}
 .banner-title{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;letter-spacing:2px;text-transform:uppercase;}
 .banner-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;}
 
-/* SECTION TITLE */
-.stit{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--dm);margin:16px 0 10px;display:flex;align-items:center;gap:8px;}
-.stit::after{content:'';flex:1;height:1px;background:var(--br);}
-
 /* ─── INICIO ─── */
-/* Hero banner */
 .ini-hero{background:linear-gradient(160deg,var(--az) 0%,var(--az2) 100%);padding:24px 20px 20px;color:#fff;position:relative;overflow:hidden;}
 .ini-hero::after{content:'';position:absolute;right:-30px;bottom:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;}
 .ini-hero-top{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
@@ -69,17 +65,14 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);max-wi
 .ini-hero-info .liga-label{font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.55);font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;}
 .ini-hero-info .liga-name{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#fff;letter-spacing:2px;line-height:1;margin-top:1px;}
 .ini-hero-info .liga-sub{font-size:11px;color:rgba(255,255,255,.65);margin-top:3px;}
-/* Contact row in hero */
 .ini-contact-row{display:flex;gap:8px;}
 .ini-contact-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:8px 12px;text-decoration:none;color:#fff;flex:1;transition:background .15s;}
 .ini-contact-btn:active{background:rgba(255,255,255,.22);}
 .ini-contact-btn .ico{font-size:14px;}
 .ini-contact-btn .txt{font-size:12px;font-weight:600;}
-
-/* Campos section */
 .ini-section{padding:16px 16px 0;}
 .ini-sec-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--dm);margin-bottom:10px;}
-.campos-row{display:flex;gap:10px;margin-bottom:0;}
+.campos-row{display:flex;gap:10px;}
 .campo-btn-card{flex:1;background:var(--bl);border-radius:12px;overflow:hidden;box-shadow:0 1px 6px rgba(26,58,110,.08);text-decoration:none;color:var(--tx);transition:transform .15s;border:1px solid var(--br);}
 .campo-btn-card:active{transform:scale(.97);}
 .campo-btn-top{background:var(--az);padding:10px 12px;display:flex;align-items:center;gap:8px;}
@@ -87,18 +80,14 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);max-wi
 .campo-btn-top .cbt-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:#fff;letter-spacing:1px;text-transform:uppercase;}
 .campo-btn-bot{padding:8px 12px;}
 .campo-btn-addr{font-size:11px;color:var(--dm);line-height:1.5;}
-.campo-map-lnk{display:inline-block;margin-top:6px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--az);letter-spacing:.5px;text-decoration:none;}
-
-/* Categories list - clean no icons */
+.campo-map-lnk{display:inline-block;margin-top:6px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--az);letter-spacing:.5px;}
 .cat-list{display:flex;flex-direction:column;gap:1px;background:var(--br);border-radius:12px;overflow:hidden;box-shadow:0 1px 6px rgba(26,58,110,.08);}
 .cat-row{background:var(--bl);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .15s;}
 .cat-row:active{background:var(--bg);}
 .cat-row-l{display:flex;flex-direction:column;gap:2px;}
 .cat-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--az);letter-spacing:.5px;}
 .cat-meta{font-size:11px;color:var(--dm);}
-.cat-arr{color:var(--br);font-size:16px;font-weight:300;}
-.cat-row:active .cat-arr{color:var(--az);}
-/* colored left border per row */
+.cat-arr{color:var(--br);font-size:16px;}
 .cat-row:nth-child(1){border-left:3px solid #1a3a6e;}
 .cat-row:nth-child(2){border-left:3px solid #c0392b;}
 .cat-row:nth-child(3){border-left:3px solid #1a7a3a;}
@@ -115,22 +104,86 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);max-wi
 .jorn-scroll::-webkit-scrollbar{display:none;}
 .jpill{flex:0 0 auto;background:var(--bl);border:1px solid var(--br);color:var(--dm);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;padding:6px 12px;border-radius:8px;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .jpill.on{background:var(--az);color:#fff;border-color:var(--az);}
-.hor-pad{padding:12px 14px;}
-.campo-blk{background:var(--bl);border-radius:12px;overflow:hidden;box-shadow:0 1px 6px rgba(26,58,110,.08);margin-bottom:12px;}
+.hor-pad{padding:10px 14px 20px;}
+
+/* Encabezado de fecha */
+.hor-fecha{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:15px;font-weight:900;letter-spacing:2px;
+  text-transform:uppercase;color:var(--tx);
+  padding:12px 2px 8px;
+  border-bottom:2px solid var(--az);
+  margin-bottom:10px;
+}
+/* Bloque por campo */
+.campo-blk{background:var(--bl);border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(26,58,110,.09);margin-bottom:12px;}
 .campo-blk-hdr{background:var(--az);padding:9px 14px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;color:#fff;letter-spacing:1.5px;text-transform:uppercase;}
-.partido-row{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--br);gap:10px;transition:background .15s;}
-.partido-row:last-child{border-bottom:none;}
-.partido-row:active{background:var(--bg);}
-.pr-hora{font-size:12px;color:var(--dm);width:56px;flex-shrink:0;font-weight:600;}
-.pr-center{flex:1;min-width:0;}
-.pr-local{font-size:14px;font-weight:700;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.pr-local.win{color:var(--gn);}
-.pr-sep{font-size:10px;color:var(--dm);margin:2px 0;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;}
-.pr-visit{font-size:14px;font-weight:700;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.pr-visit.win{color:var(--gn);}
-.pr-result{flex-shrink:0;min-width:52px;text-align:center;}
-.pr-score{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--az);line-height:1;}
-.pr-pend{background:var(--bg);border:1px solid var(--br);border-radius:6px;padding:4px 8px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:var(--dm);letter-spacing:1px;}
+
+/* ── PARTIDO CARD — estilo imagen: logo | hora | logo ── */
+.pcard{
+  display:flex;align-items:center;
+  padding:14px 10px;
+  border-bottom:1px solid var(--br);
+  gap:6px;
+  background:var(--bl);
+  transition:background .15s;
+}
+.pcard:last-child{border-bottom:none;}
+.pcard:active{background:var(--bg);}
+
+/* Team side */
+.pc-team{
+  display:flex;flex-direction:column;align-items:center;
+  gap:6px;width:74px;flex-shrink:0;
+}
+.pc-av{
+  width:46px;height:46px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:16px;font-weight:900;color:#fff;
+  overflow:hidden;flex-shrink:0;
+  border:2px solid rgba(0,0,0,.07);
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+.pc-av img{width:100%;height:100%;object-fit:cover;}
+.pc-name{
+  font-size:10px;font-weight:700;color:var(--tx);
+  text-align:center;line-height:1.25;
+  width:74px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.pc-name.win{color:var(--gn);font-weight:800;}
+
+/* Center */
+.pc-mid{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;
+  min-width:0;
+}
+.pc-hora{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:32px;font-weight:900;
+  color:var(--tx);letter-spacing:-1px;line-height:1;
+}
+.pc-score{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:36px;font-weight:900;
+  color:var(--az);letter-spacing:2px;line-height:1;
+}
+.pc-score-dash{color:var(--dm);font-weight:300;font-size:28px;}
+.pc-vs{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:800;letter-spacing:2px;
+  color:var(--dm);border:1px solid var(--br);
+  padding:3px 12px;border-radius:20px;background:var(--bg);
+}
+.pc-final{
+  background:var(--gn);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:9px;font-weight:800;letter-spacing:1px;
+  padding:2px 8px;border-radius:10px;text-transform:uppercase;
+}
+.pc-sub{font-size:10px;color:var(--dm);font-weight:600;text-align:center;}
 
 /* ─── POSICIONES ─── */
 .pos-pad{padding:14px;}
@@ -142,7 +195,6 @@ table.pos thead th{padding:8px 8px;font-family:'Barlow Condensed',sans-serif;fon
 table.pos thead th.lt{text-align:left;}
 table.pos tbody tr{border-bottom:1px solid var(--br);transition:background .1s;}
 table.pos tbody tr:last-child{border-bottom:none;}
-table.pos tbody tr:active{background:var(--bg);}
 table.pos tbody tr.t1{background:linear-gradient(90deg,rgba(26,58,110,.07) 0%,transparent 70%);}
 table.pos tbody td{padding:10px 8px;font-size:13px;text-align:center;}
 table.pos tbody td.lt{text-align:left;}
@@ -171,17 +223,18 @@ table.pos tbody td.lt{text-align:left;}
 .foto-lbl{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(26,58,110,.85));padding:16px 9px 8px;font-size:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#fff;}
 .foto-item.grande{grid-column:span 2;aspect-ratio:16/9;}
 
-/* MODAL */
+/* MODAL FOTO */
 .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;align-items:center;justify-content:center;padding:20px;}
 .mo.open{display:flex;}
 .mo img{max-width:100%;max-height:85vh;border-radius:10px;object-fit:contain;}
 .mx{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:22px;width:40px;height:40px;border-radius:50%;cursor:pointer;}
 
-/* REFRESH BTN */
+/* REFRESH */
 .rfbtn{position:fixed;bottom:78px;right:14px;background:var(--az);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;box-shadow:0 3px 14px rgba(26,58,110,.4);z-index:90;display:flex;align-items:center;justify-content:center;transition:transform .15s;}
 .rfbtn:active{transform:scale(.9);}
 .rfbtn.spin{animation:spin .6s linear infinite;}
 
+/* TOAST */
 .empty{text-align:center;padding:40px 20px;color:var(--dm);}
 .empty .eico{font-size:44px;margin-bottom:10px;}
 .sync-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--gn);color:#fff;padding:8px 18px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;z-index:300;opacity:0;transition:all .3s;pointer-events:none;}
@@ -215,7 +268,6 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
   <!-- INICIO -->
   <div class="page on" id="pg-inicio">
-    <!-- HERO -->
     <div class="ini-hero">
       <div class="ini-hero-top">
         <img id="cc-logo" class="ini-hero-logo" src="" alt="" onerror="this.style.display='none'">
@@ -228,17 +280,14 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
       </div>
       <div class="ini-contact-row">
         <a id="ci-tel" href="tel:8017067199" class="ini-contact-btn">
-          <span class="ico">📞</span>
-          <span class="txt" id="ci-tel-v">801-706-7199</span>
+          <span class="ico">📞</span><span class="txt" id="ci-tel-v">801-706-7199</span>
         </a>
         <a id="ci-web" href="https://ligaanta.com" target="_blank" class="ini-contact-btn">
-          <span class="ico">🌐</span>
-          <span class="txt" id="ci-web-v">ligaanta.com</span>
+          <span class="ico">🌐</span><span class="txt" id="ci-web-v">ligaanta.com</span>
         </a>
       </div>
     </div>
 
-    <!-- CAMPOS -->
     <div class="ini-section">
       <div class="ini-sec-title">Campos de Juego</div>
       <div class="campos-row">
@@ -259,7 +308,6 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
       </div>
     </div>
 
-    <!-- CATEGORIAS -->
     <div class="ini-section" style="padding-bottom:20px;margin-top:16px;">
       <div class="ini-sec-title">Categorías</div>
       <div class="cat-list" id="cat-list"></div>
@@ -290,9 +338,8 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
     <div class="can-list" id="can-cont"></div>
   </div>
 
-</div><!-- /scroll -->
+</div>
 
-<!-- BOTTOM NAV -->
 <nav class="bnav">
   <button class="bni on" onclick="goPage('inicio',this)"><div class="bni-ico">🏠</div><div class="bni-lbl">Inicio</div></button>
   <button class="bni" onclick="goPage('horario',this)"><div class="bni-ico">📅</div><div class="bni-lbl">Horario</div></button>
@@ -302,18 +349,43 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 </nav>
 
 <button class="rfbtn" id="rfbtn" onclick="manualRefresh()">🔄</button>
-
 <div class="mo" id="modal" onclick="closeMod()"><button class="mx">✕</button><img id="modal-img" src="" alt=""></div>
 
 <script>
 let S={branding:{},divisiones:[],equipos:{},jornadas:[],partidos:[],canchas:[],fotos:[]};
 let curPage='inicio', hDiv=null, hJorn=null;
 const TC=['#1a3a6e','#c0392b','#1a7a3a','#c8a020','#8e44ad','#2980b9','#d35400','#16a085','#2c3e50','#7f8c8d'];
+
 function tCol(n){let h=0;for(let i=0;i<(n||'').length;i++)h=(h*31+n.charCodeAt(i))%TC.length;return TC[h];}
 function tIni(n){if(!n)return'?';const w=n.trim().split(' ').filter(Boolean);return w.length>=2?(w[0][0]+w[1][0]).toUpperCase():n.substring(0,2).toUpperCase();}
+
+// Avatar HTML para tabla de posiciones
 function avHtml(eq,sz=28){
-  if(eq.logo_url) return `<span class="eq-av" style="width:${sz}px;height:${sz}px;background:#eee"><img src="${eq.logo_url}" alt="" onerror="this.parentElement.textContent='${tIni(eq.nombre)}';this.parentElement.style.background='${tCol(eq.nombre)}'"></span>`;
-  return `<span class="eq-av" style="width:${sz}px;height:${sz}px;background:${tCol(eq.nombre)};font-size:${Math.round(sz*.38)}px">${tIni(eq.nombre)}</span>`;
+  if(eq.logo_url)return`<span class="eq-av" style="width:${sz}px;height:${sz}px;background:#eee"><img src="${eq.logo_url}" alt="" onerror="this.parentElement.textContent='${tIni(eq.nombre)}';this.parentElement.style.background='${tCol(eq.nombre)}'"></span>`;
+  return`<span class="eq-av" style="width:${sz}px;height:${sz}px;background:${tCol(eq.nombre)};font-size:${Math.round(sz*.38)}px">${tIni(eq.nombre)}</span>`;
+}
+
+// Busca equipo por nombre en todos los equipos para obtener logo
+function eqByName(nombre){
+  for(const arr of Object.values(S.equipos)){
+    const eq=arr.find(e=>e.nombre===nombre);
+    if(eq)return eq;
+  }
+  return{nombre,logo_url:null};
+}
+
+// HTML de un lado del partido (equipo con logo grande)
+function teamSide(nombre,isWin){
+  const eq=eqByName(nombre);
+  let avStr;
+  if(eq.logo_url){
+    const ini=tIni(nombre).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const col=tCol(nombre);
+    avStr=`<div class="pc-av" style="background:#f0f0f0"><img src="${eq.logo_url}" alt="" onerror="this.parentElement.innerHTML='${ini}';this.parentElement.style.background='${col}'"></div>`;
+  }else{
+    avStr=`<div class="pc-av" style="background:${tCol(nombre)}">${tIni(nombre)}</div>`;
+  }
+  return`<div class="pc-team">${avStr}<div class="pc-name ${isWin?'win':''}">${nombre}</div></div>`;
 }
 
 async function loadAll(){
@@ -322,7 +394,7 @@ async function loadAll(){
       DB.from('config').select('key,value'),
       DB.from('divisiones').select('*').order('orden'),
       DB.from('equipos').select('*'),
-      DB.from('jornadas').select('*').order('numero',{ascending:false}),
+      DB.from('jornadas').select('*').order('numero',{ascending:true}),
       DB.from('partidos').select('*'),
       DB.from('canchas').select('*').order('orden'),
       DB.from('fotos').select('*').order('orden'),
@@ -351,20 +423,17 @@ function startPoll(){
   if(pollTmr)clearInterval(pollTmr);
   pollTmr=setInterval(async()=>{await loadAll();applyBrand();render();},20000);
 }
-
 function showSync(){
   const t=document.getElementById('stoa');
   t.classList.remove('show');void t.offsetWidth;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2000);
 }
-
 async function manualRefresh(){
   const b=document.getElementById('rfbtn');
   b.classList.add('spin');
   await loadAll();applyBrand();render();showSync();
   setTimeout(()=>b.classList.remove('spin'),700);
 }
-
 async function init(){
   await loadAll();
   applyBrand();
@@ -377,13 +446,9 @@ async function init(){
 function applyBrand(){
   const b=S.branding||{};
   const icons=b.icons||{};
-
-  // Colors
   if(b.color1)document.documentElement.style.setProperty('--az',b.color1);
   if(b.color2)document.documentElement.style.setProperty('--az2',b.color2);
   if(b.color3)document.documentElement.style.setProperty('--az3',b.color3);
-
-  // Fonts
   const ft=b.fontTitle||'Barlow Condensed';
   const fb=b.fontBody||'Barlow';
   [ft,fb].filter(f=>!['Barlow Condensed','Barlow'].includes(f)).forEach(f=>{
@@ -392,27 +457,19 @@ function applyBrand(){
   });
   setTimeout(()=>{
     document.body.style.fontFamily=`'${fb}',sans-serif`;
-    document.querySelectorAll('.hdr-tx .nom,.banner-title,.cat-name,.pos-blk-hdr,.campo-blk-hdr,.stit,.cc-name,.bnav .bni-lbl,.campo-blk-hdr,.dpill,.jpill').forEach(el=>el.style.fontFamily=`'${ft}',sans-serif`);
+    document.querySelectorAll('.hdr-tx .nom,.banner-title,.cat-name,.pos-blk-hdr,.campo-blk-hdr,.bnav .bni-lbl,.dpill,.jpill').forEach(el=>el.style.fontFamily=`'${ft}',sans-serif`);
   },400);
-
-  // Logo
   const logo=b.logo||'';
   const hl=document.getElementById('hdr-logo'),hb=document.getElementById('hdr-ball');
   const cl=document.getElementById('cc-logo'),cb=document.getElementById('cc-ball');
   const ligaIco=icons.liga||b.emoji||'⚽';
   if(logo){hl.src=logo;hl.style.display='block';hb.style.display='none';cl.src=logo;cl.style.display='block';cb.style.display='none';}
   else{hl.style.display='none';hb.style.display='block';hb.textContent=ligaIco;cl.style.display='none';cb.style.display='block';cb.textContent=ligaIco;}
-
-  // Nav bar icons
   const navKeys=['inicio','horario','posiciones','fotos','canchas'];
   const navDef=['🏠','📅','🏆','📸','📍'];
   document.querySelectorAll('.bni .bni-ico').forEach((el,i)=>el.textContent=icons[navKeys[i]]||navDef[i]);
-
-  // Campo icons - use new element IDs
   const ci2ind=document.getElementById('ci2-ind');if(ci2ind)ci2ind.textContent=icons.indoor||'🏟️';
   const ci2out=document.getElementById('ci2-out');if(ci2out)ci2out.textContent=icons.outdoor||'⛳';
-
-  // Text fields
   const set=(id,v)=>{const e=document.getElementById(id);if(e&&v!==undefined&&v!=='')e.textContent=v;};
   const seta=(id,attr,v)=>{const e=document.getElementById(id);if(e&&v)e[attr]=v;};
   set('hdr-nom',b.nombre||'ANTA');
@@ -427,7 +484,6 @@ function applyBrand(){
   if(b.outdoorMap)seta('campo-out','href',b.outdoorMap);
 }
 
-// ── NAVIGATION ──
 function goPage(name,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
@@ -437,27 +493,17 @@ function goPage(name,btn){
   document.getElementById('scroll').scrollTop=0;
   render();
 }
-
-// Called from cat-row click
-function goHorarioCat(div){
-  hDiv=div; hJorn=null;
-  goPage('horario', document.querySelectorAll('.bni')[1]);
-}
+function goHorarioCat(div){hDiv=div;hJorn=null;goPage('horario',document.querySelectorAll('.bni')[1]);}
 function goPosCat(div){
-  goPage('posiciones', document.querySelectorAll('.bni')[2]);
-  // scroll to that division
-  setTimeout(()=>{
-    const el=document.getElementById('pos-div-'+CSS.escape(div));
-    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
-  },100);
+  goPage('posiciones',document.querySelectorAll('.bni')[2]);
+  setTimeout(()=>{const el=document.getElementById('pos-div-'+CSS.escape(div));if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);
 }
-
 function render(){
-  if(curPage==='inicio') rInicio();
-  if(curPage==='horario') rHorario();
-  if(curPage==='posiciones') rPos();
-  if(curPage==='fotos') rFotos();
-  if(curPage==='canchas') rCanchas();
+  if(curPage==='inicio')rInicio();
+  if(curPage==='horario')rHorario();
+  if(curPage==='posiciones')rPos();
+  if(curPage==='fotos')rFotos();
+  if(curPage==='canchas')rCanchas();
 }
 
 // ── INICIO ──
@@ -470,10 +516,8 @@ function rInicio(){
     const eqCount=(S.equipos[d]||[]).length;
     const partPend=S.partidos.filter(p=>p.division===d&&!p.jugado).length;
     return`<div class="cat-row" style="border-left-color:${colors[i%colors.length]}" onclick="goHorarioCat('${esc(d)}')">
-      <div class="cat-row-l">
-        <div class="cat-name">${d}</div>
-        <div class="cat-meta">${eqCount} equipos${partPend>0?' · '+partPend+' partidos próximos':''}</div>
-      </div>
+      <div class="cat-row-l"><div class="cat-name">${d}</div>
+      <div class="cat-meta">${eqCount} equipos${partPend>0?' · '+partPend+' partidos próximos':''}</div></div>
       <div class="cat-arr">›</div>
     </div>`;
   }).join('');
@@ -492,12 +536,16 @@ function rHorario(){
     return;
   }
   if(!hDiv||!divs.includes(hDiv))hDiv=divs[0];
-  document.getElementById('hor-divs').innerHTML=divs.map(d=>
-    `<button class="dpill ${d===hDiv?'on':''}" onclick="setHDiv('${esc(d)}')">${d}</button>`).join('');
 
+  // Pills de categorías
+  document.getElementById('hor-divs').innerHTML=divs.map(d=>
+    `<button class="dpill ${d===hDiv?'on':''}" onclick="setHDiv('${esc(d)}')">${d}</button>`
+  ).join('');
+
+  // Jornadas de esta categoría, orden CRONOLÓGICO ASCENDENTE
   const partsDiv=S.partidos.filter(p=>p.division===hDiv);
   const jIds=[...new Set(partsDiv.map(p=>p.jornada_id))];
-  const jorns=S.jornadas.filter(j=>jIds.includes(j.id)).sort((a,b)=>b.numero-a.numero);
+  const jorns=S.jornadas.filter(j=>jIds.includes(j.id)).sort((a,b)=>a.numero-b.numero);
 
   if(!jorns.length){
     document.getElementById('hor-jorns').innerHTML='';
@@ -505,39 +553,51 @@ function rHorario(){
     return;
   }
   if(!hJorn||!jorns.find(j=>j.id===hJorn))hJorn=jorns[0].id;
+
+  // Pills de jornadas
   document.getElementById('hor-jorns').innerHTML=jorns.map(j=>
-    `<button class="jpill ${j.id===hJorn?'on':''}" onclick="setHJorn(${j.id})">J${j.numero} · ${(j.fecha||'').split(' ').slice(0,2).join(' ')}</button>`).join('');
+    `<button class="jpill ${j.id===hJorn?'on':''}" onclick="setHJorn(${j.id})">J${j.numero} · ${(j.fecha||'').split(' ').slice(0,2).join(' ')}</button>`
+  ).join('');
 
   const jornada=jorns.find(j=>j.id===hJorn);
-  const parts=S.partidos.filter(p=>p.jornada_id===hJorn&&p.division===hDiv).sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
+  // Partidos ordenados por hora (cronológico)
+  const parts=S.partidos
+    .filter(p=>p.jornada_id===hJorn&&p.division===hDiv)
+    .sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
 
-  if(!parts.length){document.getElementById('hor-cont').innerHTML='<div class="empty"><div class="eico">📅</div><p>Sin partidos en esta jornada</p></div>';return;}
+  if(!parts.length){
+    document.getElementById('hor-cont').innerHTML='<div class="empty"><div class="eico">📅</div><p>Sin partidos en esta jornada</p></div>';
+    return;
+  }
 
-  const campos={};parts.forEach(p=>{if(!campos[p.campo])campos[p.campo]=[];campos[p.campo].push(p);});
-  const fecha=(jornada.fecha||'').split(' ').slice(0,3).join(' ').toUpperCase();
+  // Fecha de la jornada como encabezado
+  let html=`<div class="hor-fecha">${(jornada.fecha||'').toUpperCase()}</div>`;
 
-  let html='';
+  // Agrupar por campo y mostrar en bloques
+  const campos={};
+  parts.forEach(p=>{const c=p.campo||'Campo';if(!campos[c])campos[c]=[];campos[c].push(p);});
+
   Object.entries(campos).forEach(([campo,ps])=>{
     html+=`<div class="campo-blk"><div class="campo-blk-hdr">📍 ${campo}</div>`;
     ps.forEach(p=>{
       const lW=p.jugado&&p.goles_local>p.goles_visitante;
       const vW=p.jugado&&p.goles_visitante>p.goles_local;
-      html+=`<div class="partido-row">
-        <div class="pr-hora">${p.hora||''}</div>
-        <div class="pr-center">
-          <div class="pr-local ${lW?'win':''}">${p.local}</div>
-          <div class="pr-sep">VS</div>
-          <div class="pr-visit ${vW?'win':''}">${p.visitante}</div>
-        </div>
-        <div class="pr-result">
-          ${p.jugado
-            ?`<div class="pr-score">${p.goles_local}<span style="color:var(--dm);font-size:14px">–</span>${p.goles_visitante}</div>`
-            :`<div class="pr-pend">VS</div>`}
-        </div>
+      // Centro: hora grande si pendiente, marcador si jugado
+      const mid=p.jugado
+        ?`<div class="pc-score">${p.goles_local}<span class="pc-score-dash"> – </span>${p.goles_visitante}</div>
+          <div class="pc-final">Final</div>
+          <div class="pc-sub">${p.hora||''}</div>`
+        :`<div class="pc-hora">${p.hora||'--:--'}</div>
+          <div class="pc-vs">VS</div>`;
+      html+=`<div class="pcard">
+        ${teamSide(p.local,lW)}
+        <div class="pc-mid">${mid}</div>
+        ${teamSide(p.visitante,vW)}
       </div>`;
     });
     html+=`</div>`;
   });
+
   document.getElementById('hor-cont').innerHTML=html;
 }
 
@@ -552,8 +612,7 @@ function rPos(){
     html+=`<div class="pos-block" id="pos-div-${div}">
       <div class="pos-blk-hdr" style="background:${TC[di%TC.length]}">${div}</div>
       <table class="pos"><thead><tr>
-        <th class="lt" style="width:28px">#</th>
-        <th class="lt">Equipo</th>
+        <th class="lt" style="width:28px">#</th><th class="lt">Equipo</th>
         <th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>DG</th><th>PTS</th>
       </tr></thead><tbody>
       ${eqs.map((e,i)=>`<tr class="${i===0?'t1':''}">
@@ -587,13 +646,9 @@ function rCanchas(){
     ?cc.map((c,i)=>{
       const logo=c.logo_url||'';
       let icoHtml;
-      if(logo.startsWith('data:')||logo.startsWith('http')){
-        icoHtml=`<img src="${logo}" style="width:100%;height:100%;object-fit:cover;border-radius:10px" onerror="this.style.display='none'">`;
-      } else if(logo){
-        icoHtml=`<span style="font-size:22px">${logo}</span>`;
-      } else {
-        icoHtml=['🏟️','⛳','📍'][i%3];
-      }
+      if(logo.startsWith('data:')||logo.startsWith('http')){icoHtml=`<img src="${logo}" style="width:100%;height:100%;object-fit:cover;border-radius:10px" onerror="this.style.display='none'">`;}
+      else if(logo){icoHtml=`<span style="font-size:22px">${logo}</span>`;}
+      else{icoHtml=['🏟️','⛳','📍'][i%3];}
       return`<a href="${c.mapa_url||'#'}" target="_blank" class="can-card">
         <div class="can-ico">${icoHtml}</div>
         <div><div class="can-name">${c.nombre}</div><div class="can-addr">${c.direccion}</div></div>
