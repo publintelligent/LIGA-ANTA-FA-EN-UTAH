@@ -366,12 +366,6 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
       </a>
     </div>
 
-    <!-- Próximos partidos destacados -->
-    <div class="ini-section" id="ini-proximos-sec">
-      <div class="ini-sec-title">Próximos Partidos</div>
-      <div id="ini-proximos"></div>
-    </div>
-
     <!-- Categorías -->
     <div class="ini-section" style="padding-bottom:24px;margin-top:4px;">
       <div class="ini-sec-title">Categorías</div>
@@ -611,34 +605,6 @@ function rInicio(){
   el('stat-teams').textContent=totalEqs||'–';
   el('stat-games').textContent=S.partidos.length||'–';
 
-  // Próximos partidos (no jugados), máx 3 partidos de la jornada más reciente por división
-  const proximos=buildProximos();
-  const pc=document.getElementById('ini-proximos');
-  const sec=document.getElementById('ini-proximos-sec');
-  if(proximos.length){
-    sec.style.display='';
-    pc.innerHTML=proximos.map(g=>`
-      <div class="ini-next-card">
-        <div class="ini-next-hdr">
-          <div class="ini-next-hdr-div">${g.div}</div>
-          <div class="ini-next-hdr-fecha">${g.fecha}</div>
-        </div>
-        ${g.parts.slice(0,3).map(p=>{
-          const eq1=eqByName(p.local);
-          const eq2=eqByName(p.visitante);
-          const av1=eq1.logo_url?`<div class="ini-np-av" style="background:#f0f0f0"><img src="${eq1.logo_url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.background='${tCol(p.local)}';this.parentElement.textContent='${tIni(p.local)}'"></div>`:`<div class="ini-np-av" style="background:${tCol(p.local)}">${tIni(p.local)}</div>`;
-          const av2=eq2.logo_url?`<div class="ini-np-av" style="background:#f0f0f0"><img src="${eq2.logo_url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.background='${tCol(p.visitante)}';this.parentElement.textContent='${tIni(p.visitante)}'"></div>`:`<div class="ini-np-av" style="background:${tCol(p.visitante)}">${tIni(p.visitante)}</div>`;
-          return`<div class="ini-next-partido">
-            <div class="ini-np-team">${av1}<div class="ini-np-name">${p.local}</div></div>
-            <div class="ini-np-mid"><div class="ini-np-hora">${p.hora||'--:--'}</div><div class="ini-np-vs">VS</div></div>
-            <div class="ini-np-team right"><div class="ini-np-name" style="text-align:right">${p.visitante}</div>${av2}</div>
-          </div>`;
-        }).join('')}
-      </div>`).join('');
-  }else{
-    sec.style.display='none';
-  }
-
   // Categorías — cards
   const divs=S.divisiones||[];
   const catEl=document.getElementById('cat-list');
@@ -657,23 +623,6 @@ function rInicio(){
       <div class="cat-card-arr">›</div>
     </div>`;
   }).join('');
-}
-
-// Construye grupos de próximos partidos por división (jornada más reciente con pendientes)
-function buildProximos(){
-  const groups=[];
-  S.divisiones.forEach(div=>{
-    const pending=S.partidos.filter(p=>p.division===div&&!p.jugado);
-    if(!pending.length)return;
-    // Encontrar la jornada de menor número con partidos pendientes
-    const jIds=[...new Set(pending.map(p=>p.jornada_id))];
-    const jorns=S.jornadas.filter(j=>jIds.includes(j.id)).sort((a,b)=>a.numero-b.numero);
-    if(!jorns.length)return;
-    const jorn=jorns[0];
-    const parts=pending.filter(p=>p.jornada_id===jorn.id).sort((a,b)=>horaToMin(a.hora)-horaToMin(b.hora));
-    groups.push({div,fecha:jorn.fecha||'',parts});
-  });
-  return groups;
 }
 
 // ── HORARIO — FIX: solo jornada más reciente, campos ordenados, horas ordenadas ──
