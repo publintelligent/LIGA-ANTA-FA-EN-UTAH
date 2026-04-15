@@ -14,11 +14,16 @@ html{height:100%;}
 body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);max-width:430px;margin:0 auto;height:100%;display:flex;flex-direction:column;font-size:17px;}
 
 /* LOADER */
-.lov{position:fixed;inset:0;background:#fff;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.lov{position:fixed;inset:0;background:#0f1f4a;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
 .lov.gone{display:none;}
-.sp{width:44px;height:44px;border:3px solid var(--br);border-top-color:var(--az);border-radius:50%;animation:spin .7s linear infinite;}
+/* Animated ball in loader */
+.lov-ball{font-size:60px;animation:ballBounce 0.8s ease-in-out infinite alternate;}
+@keyframes ballBounce{from{transform:translateY(0) scale(1);}to{transform:translateY(-24px) scale(0.95);}}
+.lov-shadow{width:40px;height:8px;background:rgba(255,255,255,.15);border-radius:50%;animation:shadowAnim 0.8s ease-in-out infinite alternate;margin-top:-8px;}
+@keyframes shadowAnim{from{transform:scale(1);opacity:.5;}to{transform:scale(0.6);opacity:.15;}}
+.sp{width:44px;height:44px;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.sp-t{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--dm);letter-spacing:2px;}
+.sp-t{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:3px;}
 
 /* HEADER */
 .hdr{background:var(--az);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 3px 12px rgba(26,58,110,.3);}
@@ -56,58 +61,89 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);max-wi
 .banner-title{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;letter-spacing:2px;text-transform:uppercase;}
 .banner-sub{font-size:15px;color:rgba(255,255,255,.65);margin-top:2px;}
 
-/* ─── INICIO ─── */
-.ini-hero{background:linear-gradient(160deg,var(--az) 0%,var(--az2) 100%);padding:26px 20px 22px;color:#fff;position:relative;overflow:hidden;}
-.ini-hero::after{content:'';position:absolute;right:-30px;bottom:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;}
-.ini-hero-top{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
-.ini-hero-logo{height:58px;width:auto;object-fit:contain;display:none;border-radius:6px;}
-.ini-hero-ball{font-size:46px;line-height:1;}
-.ini-hero-info .liga-label{font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.55);font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;}
-.ini-hero-info .liga-name{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:900;color:#fff;letter-spacing:2px;line-height:1;margin-top:1px;}
-.ini-hero-info .liga-sub{font-size:14px;color:rgba(255,255,255,.65);margin-top:4px;}
-.ini-contact-row{display:flex;gap:8px;}
-.ini-contact-btn{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:10px 14px;text-decoration:none;color:#fff;flex:1;transition:background .15s;}
-.ini-contact-btn:active{background:rgba(255,255,255,.22);}
-.ini-contact-btn .ico{font-size:17px;}
-.ini-contact-btn .txt{font-size:15px;font-weight:600;}
+/* ═══════════════════════════════════════
+   INICIO — rediseño profesional
+═══════════════════════════════════════ */
+.ini-hero{background:linear-gradient(155deg,#0a1830 0%,#1a3a6e 55%,#2a5298 100%);padding:0;color:#fff;position:relative;overflow:hidden;min-height:280px;display:flex;flex-direction:column;justify-content:flex-end;}
 
-/* Campos en inicio — dinámico */
+/* SVG campo de fútbol — muy sutil */
+.ini-hero-field{
+  position:absolute;inset:0;
+  pointer-events:none;
+  z-index:1;
+  opacity:1;
+}
+
+/* Logo watermark detrás */
+.ini-hero-watermark{
+  position:absolute;
+  right:-30px;bottom:-10px;
+  width:200px;height:200px;
+  z-index:1;
+  pointer-events:none;
+  opacity:0.06;
+  filter:blur(1px) grayscale(1);
+  object-fit:contain;
+}
+
+/* Balón animado flotante */
+.ini-ball-wrap{
+  position:absolute;
+  right:20px;top:20px;
+  animation:floatBall 3s ease-in-out infinite;
+  z-index:2;
+}
+.ini-ball-emoji{font-size:70px;line-height:1;filter:drop-shadow(0 8px 24px rgba(0,0,0,.4));}
+.ini-ball-shadow{width:50px;height:10px;background:rgba(0,0,0,.25);border-radius:50%;margin:0 auto;margin-top:-4px;animation:floatShadow 3s ease-in-out infinite;}
+@keyframes floatBall{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-14px) rotate(15deg);}}
+@keyframes floatShadow{0%,100%{transform:scale(1);opacity:.6;}50%{transform:scale(.7);opacity:.3;}}
+
+.ini-hero-content{position:relative;z-index:3;padding:22px 20px 24px;}
+.ini-hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;margin-bottom:12px;}
+.ini-hero-badge-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:lp 2s infinite;}
+.ini-hero-badge-txt{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.8);}
+.ini-hero-title{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;color:#fff;letter-spacing:3px;line-height:.95;text-transform:uppercase;}
+.ini-hero-title span{color:rgba(255,255,255,.4);font-size:28px;display:block;letter-spacing:4px;font-weight:700;margin-bottom:4px;}
+.ini-hero-sub{font-size:14px;color:rgba(255,255,255,.55);margin-top:10px;line-height:1.5;}
+
+/* Stats row */
+.ini-stats{display:flex;border-top:1px solid rgba(255,255,255,.1);}
+.ini-stat{flex:1;padding:14px 10px;text-align:center;border-right:1px solid rgba(255,255,255,.08);}
+.ini-stat:last-child{border-right:none;}
+.ini-stat-val{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#fff;line-height:1;}
+.ini-stat-lbl{font-size:11px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+
+/* Contact buttons */
+.ini-contact-row{display:flex;gap:8px;padding:16px 16px 0;}
+.ini-contact-btn{display:flex;align-items:center;gap:7px;background:var(--bl);border:1px solid var(--br);border-radius:10px;padding:11px 14px;text-decoration:none;color:var(--tx);flex:1;transition:background .15s;box-shadow:0 2px 8px rgba(26,58,110,.08);}
+.ini-contact-btn:active{background:var(--bg);}
+.ini-contact-btn .ico{font-size:18px;}
+.ini-contact-btn .txt{font-size:14px;font-weight:600;color:var(--az);}
+
+/* Categorías en inicio */
 .ini-section{padding:18px 16px 0;}
 .ini-sec-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--dm);margin-bottom:12px;}
-.campos-row{display:flex;gap:10px;flex-wrap:wrap;}
-.campo-btn-card{flex:1;min-width:calc(50% - 5px);background:var(--bl);border-radius:12px;overflow:hidden;box-shadow:0 1px 6px rgba(26,58,110,.08);text-decoration:none;color:var(--tx);transition:transform .15s;border:1px solid var(--br);}
-.campo-btn-card:active{transform:scale(.97);}
-.campo-btn-top{background:var(--az);padding:11px 12px;display:flex;align-items:center;gap:8px;}
-.campo-btn-top .cbt-ico{font-size:20px;}
-.campo-btn-top .cbt-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#fff;letter-spacing:1px;text-transform:uppercase;}
-.campo-btn-bot{padding:10px 12px;}
-.campo-btn-addr{font-size:13px;color:var(--dm);line-height:1.5;}
-.campo-map-lnk{display:inline-block;margin-top:6px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--az);letter-spacing:.5px;}
 
-/* Categorias */
-.cat-list{display:flex;flex-direction:column;gap:1px;background:var(--br);border-radius:12px;overflow:hidden;box-shadow:0 1px 6px rgba(26,58,110,.08);}
-.cat-row{background:var(--bl);padding:17px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .15s;}
-.cat-row:active{background:var(--bg);}
-.cat-row-l{display:flex;flex-direction:column;gap:3px;}
-.cat-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--az);letter-spacing:.5px;}
-.cat-meta{font-size:14px;color:var(--dm);}
-.cat-arr{color:var(--br);font-size:22px;}
-.cat-row:nth-child(1){border-left:3px solid #1a3a6e;}
-.cat-row:nth-child(2){border-left:3px solid #c0392b;}
-.cat-row:nth-child(3){border-left:3px solid #1a7a3a;}
-.cat-row:nth-child(4){border-left:3px solid #c8a020;}
-.cat-row:nth-child(5){border-left:3px solid #8e44ad;}
-.cat-row:nth-child(6){border-left:3px solid #2980b9;}
+/* Categorias nueva versión — cards horizontales */
+.cat-cards{display:flex;flex-direction:column;gap:8px;}
+.cat-card{background:var(--bl);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(26,58,110,.07);display:flex;align-items:center;cursor:pointer;transition:transform .15s;border:1px solid var(--br);}
+.cat-card:active{transform:scale(.98);}
+.cat-card-stripe{width:5px;align-self:stretch;flex-shrink:0;}
+.cat-card-body{flex:1;padding:14px 14px;}
+.cat-card-name{font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:800;color:var(--az);letter-spacing:.5px;}
+.cat-card-meta{font-size:13px;color:var(--dm);margin-top:2px;}
+.cat-card-arr{padding:14px;font-size:20px;color:var(--br);}
 
 /* ─── HORARIO ─── */
 .div-scroll{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:14px 14px 0;}
 .div-scroll::-webkit-scrollbar{display:none;}
 .dpill{flex:0 0 auto;background:var(--bl);border:2px solid var(--br);color:var(--dm);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;padding:8px 18px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .dpill.on{background:var(--az);color:#fff;border-color:var(--az);}
-.jorn-scroll{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:10px 14px 2px;}
-.jorn-scroll::-webkit-scrollbar{display:none;}
-.jpill{flex:0 0 auto;background:var(--bl);border:1px solid var(--br);color:var(--dm);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer;transition:all .15s;white-space:nowrap;}
-.jpill.on{background:var(--az);color:#fff;border-color:var(--az);}
+
+/* Jornada única — sin scroll de pestañas, solo label */
+.jorn-label{padding:10px 16px 2px;}
+.jorn-label-txt{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--dm);letter-spacing:1px;text-transform:uppercase;background:var(--bg);border:1px solid var(--br);border-radius:8px;padding:8px 14px;display:inline-block;}
+
 .hor-pad{padding:10px 14px 20px;}
 
 /* Fecha jornada */
@@ -117,7 +153,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);max-wi
 .campo-blk{background:var(--bl);border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(26,58,110,.09);margin-bottom:12px;}
 .campo-blk-hdr{background:var(--az);padding:11px 14px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:#fff;letter-spacing:1.5px;text-transform:uppercase;}
 
-/* ── PARTIDO CARD — logo | hora | logo ── */
+/* ── PARTIDO CARD ── */
 .pcard{display:flex;align-items:center;padding:18px 10px;border-bottom:1px solid var(--br);gap:6px;background:var(--bl);transition:background .15s;}
 .pcard:last-child{border-bottom:none;}
 .pcard:active{background:var(--bg);}
@@ -165,20 +201,38 @@ table.pos tbody td.lt{text-align:left;}
 .can-addr{font-size:13px;color:var(--dm);margin-top:2px;}
 .can-map{margin-left:auto;background:var(--az);color:#fff;border-radius:8px;padding:10px 13px;font-size:20px;text-decoration:none;flex-shrink:0;}
 
-/* ─── FOTOS ─── */
-.foto-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px;}
-.foto-item{border-radius:12px;overflow:hidden;background:var(--bg);aspect-ratio:4/3;position:relative;border:1px solid var(--br);cursor:pointer;transition:transform .15s;}
-.foto-item:active{transform:scale(.97);}
-.foto-item img{width:100%;height:100%;object-fit:cover;}
-.foto-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--dm);font-size:28px;}
-.foto-lbl{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(26,58,110,.85));padding:16px 9px 8px;font-size:14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#fff;}
-.foto-item.grande{grid-column:span 2;aspect-ratio:16/9;}
+/* ─── REDES SOCIALES ─── */
+.redes-list{padding:20px 16px;display:flex;flex-direction:column;gap:14px;}
 
-/* MODAL */
-.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;align-items:center;justify-content:center;padding:20px;}
-.mo.open{display:flex;}
-.mo img{max-width:100%;max-height:85vh;border-radius:10px;object-fit:contain;}
-.mx{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:24px;width:44px;height:44px;border-radius:50%;cursor:pointer;}
+.red-card{border-radius:18px;overflow:hidden;text-decoration:none;display:block;box-shadow:0 4px 20px rgba(0,0,0,.13);transition:transform .15s,box-shadow .15s;position:relative;}
+.red-card:active{transform:scale(.97);box-shadow:0 2px 10px rgba(0,0,0,.1);}
+
+/* Instagram */
+.red-card.instagram{background:linear-gradient(135deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);}
+/* TikTok */
+.red-card.tiktok{background:#010101;}
+/* Facebook */
+.red-card.facebook{background:linear-gradient(135deg,#1877f2 0%,#0a5dc2 100%);}
+
+.red-inner{display:flex;align-items:center;gap:16px;padding:20px 20px;}
+.red-icon-wrap{width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;backdrop-filter:blur(4px);}
+.red-svg{width:32px;height:32px;fill:#fff;}
+.red-info{flex:1;}
+.red-platform{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:2px;}
+.red-handle{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:#fff;letter-spacing:.5px;line-height:1;}
+.red-desc{font-size:13px;color:rgba(255,255,255,.65);margin-top:4px;line-height:1.4;}
+.red-arrow{font-size:22px;color:rgba(255,255,255,.5);flex-shrink:0;}
+
+/* Decoración interna */
+.red-card::before{content:'';position:absolute;right:-20px;top:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none;}
+.red-card::after{content:'';position:absolute;right:20px;bottom:-30px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;}
+
+/* TikTok doble color */
+.red-card.tiktok .red-icon-wrap{background:rgba(255,255,255,.08);}
+.tiktok-icon-inner{position:relative;display:flex;align-items:center;justify-content:center;}
+
+/* Nota de handle vacío */
+.red-empty-note{text-align:center;padding:14px;color:rgba(255,255,255,.45);font-size:13px;font-style:italic;}
 
 /* REFRESH */
 .rfbtn{position:fixed;bottom:82px;right:14px;background:var(--az);color:#fff;border:none;border-radius:50%;width:50px;height:50px;font-size:22px;cursor:pointer;box-shadow:0 3px 14px rgba(26,58,110,.4);z-index:90;display:flex;align-items:center;justify-content:center;transition:transform .15s;}
@@ -190,6 +244,22 @@ table.pos tbody td.lt{text-align:left;}
 .empty p{font-size:16px;}
 .sync-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--gn);color:#fff;padding:9px 22px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;z-index:300;opacity:0;transition:all .3s;pointer-events:none;}
 .sync-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* Próximos partidos en inicio */
+.ini-next-card{background:var(--bl);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(26,58,110,.08);border:1px solid var(--br);margin-bottom:12px;}
+.ini-next-hdr{background:linear-gradient(90deg,var(--az),var(--az2));padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.ini-next-hdr-div{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:#fff;letter-spacing:1px;text-transform:uppercase;}
+.ini-next-hdr-fecha{font-size:12px;color:rgba(255,255,255,.65);font-weight:600;}
+.ini-next-partido{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--br);gap:8px;}
+.ini-next-partido:last-child{border-bottom:none;}
+.ini-np-team{flex:1;display:flex;align-items:center;gap:8px;}
+.ini-np-team.right{flex-direction:row-reverse;justify-content:flex-start;}
+.ini-np-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:900;color:#fff;overflow:hidden;flex-shrink:0;}
+.ini-np-av img{width:100%;height:100%;object-fit:cover;}
+.ini-np-name{font-size:13px;font-weight:700;color:var(--tx);line-height:1.2;}
+.ini-np-mid{text-align:center;min-width:56px;flex-shrink:0;}
+.ini-np-hora{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:var(--az);}
+.ini-np-vs{font-size:10px;font-weight:700;color:var(--dm);letter-spacing:1px;}
 </style>
 </head>
 <body>
@@ -200,7 +270,11 @@ const SUPABASE_ANON_KEY='sb_publishable_bRj5okEQwcbYsINR3auVwQ_sHCpvh2H';
 const DB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 </script>
 
-<div class="lov" id="lov"><div class="sp"></div><div class="sp-t">CARGANDO...</div></div>
+<div class="lov" id="lov">
+  <div class="ini-ball-emoji" style="font-size:72px;animation:ballBounce .8s ease-in-out infinite alternate">⚽</div>
+  <div class="lov-shadow"></div>
+  <div class="sp-t" style="margin-top:16px">CARGANDO...</div>
+</div>
 <div class="sync-toast" id="stoa">✅ Actualizado</div>
 
 <div class="hdr">
@@ -222,42 +296,93 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
   <!-- INICIO -->
   <div class="page on" id="pg-inicio">
+    <!-- Hero con balón animado -->
     <div class="ini-hero">
-      <div class="ini-hero-top">
-        <img id="cc-logo" class="ini-hero-logo" src="" alt="" onerror="this.style.display='none'">
-        <span id="cc-ball" class="ini-hero-ball">⚽</span>
-        <div class="ini-hero-info">
-          <div class="liga-label" id="cc-label">Liga</div>
-          <div class="liga-name" id="cc-name">ANTA</div>
-          <div class="liga-sub" id="cc-sub">Asociación Nacional de Torneos Americanos · Utah</div>
+      <!-- Campo de fútbol SVG sutil -->
+      <svg class="ini-hero-field" viewBox="0 0 430 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <!-- Líneas del campo muy sutiles -->
+        <!-- Borde campo -->
+        <rect x="24" y="18" width="382" height="264" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.5"/>
+        <!-- Línea del medio -->
+        <line x1="215" y1="18" x2="215" y2="282" stroke="rgba(255,255,255,0.07)" stroke-width="1.5"/>
+        <!-- Círculo central -->
+        <circle cx="215" cy="150" r="50" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.5"/>
+        <!-- Punto central -->
+        <circle cx="215" cy="150" r="2.5" fill="rgba(255,255,255,0.1)"/>
+        <!-- Área grande izquierda -->
+        <rect x="24" y="87" width="66" height="126" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.2"/>
+        <!-- Área chica izquierda -->
+        <rect x="24" y="118" width="28" height="64" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <!-- Portería izquierda -->
+        <rect x="16" y="134" width="9" height="32" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="1.5"/>
+        <!-- Área grande derecha -->
+        <rect x="340" y="87" width="66" height="126" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.2"/>
+        <!-- Área chica derecha -->
+        <rect x="378" y="118" width="28" height="64" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <!-- Portería derecha -->
+        <rect x="405" y="134" width="9" height="32" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="1.5"/>
+        <!-- Arco área izquierda -->
+        <path d="M 90 113 A 50 50 0 0 1 90 187" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <!-- Arco área derecha -->
+        <path d="M 340 113 A 50 50 0 0 0 340 187" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <!-- Corners -->
+        <path d="M 24 28 A 10 10 0 0 1 34 18" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <path d="M 396 18 A 10 10 0 0 1 406 28" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <path d="M 24 272 A 10 10 0 0 0 34 282" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <path d="M 406 272 A 10 10 0 0 1 396 282" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      </svg>
+      <!-- Logo watermark (se llena en applyBrand si hay logo) -->
+      <img id="hero-watermark" class="ini-hero-watermark" src="" alt="" onerror="this.style.display='none'">
+      <div class="ini-ball-wrap" id="hero-ball-wrap">
+        <div class="ini-ball-emoji" id="hero-ball-emoji">⚽</div>
+        <div class="ini-ball-shadow"></div>
+      </div>
+      <div class="ini-hero-content">
+        <div class="ini-hero-badge">
+          <div class="ini-hero-badge-dot"></div>
+          <div class="ini-hero-badge-txt">En vivo · Temporada 2026</div>
         </div>
+        <div class="ini-hero-title">
+          <span id="cc-label">Liga</span>
+          <span id="cc-name" style="font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;color:#fff;letter-spacing:3px;line-height:.95;text-transform:uppercase;display:block;">ANTA</span>
+        </div>
+        <div class="liga-sub" id="cc-sub" style="font-size:13px;color:rgba(255,255,255,.5);margin-top:10px;">Asociación Nacional de Torneos Americanos · Utah</div>
       </div>
-      <div class="ini-contact-row">
-        <a id="ci-tel" href="tel:8017067199" class="ini-contact-btn">
-          <span class="ico">📞</span><span class="txt" id="ci-tel-v">801-706-7199</span>
-        </a>
-        <a id="ci-web" href="https://ligaanta.com" target="_blank" class="ini-contact-btn">
-          <span class="ico">🌐</span><span class="txt" id="ci-web-v">ligaanta.com</span>
-        </a>
+      <!-- Stats dinámicos -->
+      <div class="ini-stats" id="ini-stats">
+        <div class="ini-stat"><div class="ini-stat-val" id="stat-divs">–</div><div class="ini-stat-lbl">Categorías</div></div>
+        <div class="ini-stat"><div class="ini-stat-val" id="stat-teams">–</div><div class="ini-stat-lbl">Equipos</div></div>
+        <div class="ini-stat"><div class="ini-stat-val" id="stat-games">–</div><div class="ini-stat-lbl">Partidos</div></div>
       </div>
     </div>
 
-    <!-- Canchas dinámicas desde Supabase -->
-    <div class="ini-section">
-      <div class="ini-sec-title">Campos de Juego</div>
-      <div class="campos-row" id="campos-row"></div>
+    <!-- Contacto -->
+    <div class="ini-contact-row">
+      <a id="ci-tel" href="tel:8017067199" class="ini-contact-btn">
+        <span class="ico">📞</span><span class="txt" id="ci-tel-v">801-706-7199</span>
+      </a>
+      <a id="ci-web" href="https://ligaanta.com" target="_blank" class="ini-contact-btn">
+        <span class="ico">🌐</span><span class="txt" id="ci-web-v">ligaanta.com</span>
+      </a>
     </div>
 
-    <div class="ini-section" style="padding-bottom:20px;margin-top:16px;">
+    <!-- Próximos partidos destacados -->
+    <div class="ini-section" id="ini-proximos-sec">
+      <div class="ini-sec-title">Próximos Partidos</div>
+      <div id="ini-proximos"></div>
+    </div>
+
+    <!-- Categorías -->
+    <div class="ini-section" style="padding-bottom:24px;margin-top:4px;">
       <div class="ini-sec-title">Categorías</div>
-      <div class="cat-list" id="cat-list"></div>
+      <div class="cat-cards" id="cat-list"></div>
     </div>
   </div>
 
   <!-- HORARIO -->
   <div class="page" id="pg-horario">
     <div class="div-scroll" id="hor-divs"></div>
-    <div class="jorn-scroll" id="hor-jorns"></div>
+    <div class="jorn-label" id="jorn-label-wrap"></div>
     <div class="hor-pad" id="hor-cont"></div>
   </div>
 
@@ -266,10 +391,10 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
     <div class="pos-pad" id="pos-cont"></div>
   </div>
 
-  <!-- FOTOS -->
+  <!-- REDES SOCIALES -->
   <div class="page" id="pg-fotos">
-    <div class="banner"><div class="banner-title">📸 Galería</div><div class="banner-sub">Fotos y videos de los juegos</div></div>
-    <div class="foto-grid" id="foto-cont"></div>
+    <div class="banner"><div class="banner-title">📲 Redes Sociales</div><div class="banner-sub">Síguenos y comparte el fútbol</div></div>
+    <div class="redes-list" id="redes-cont"></div>
   </div>
 
   <!-- CANCHAS -->
@@ -284,16 +409,15 @@ const DB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
   <button class="bni on" onclick="goPage('inicio',this)"><div class="bni-ico">🏠</div><div class="bni-lbl">Inicio</div></button>
   <button class="bni" onclick="goPage('horario',this)"><div class="bni-ico">📅</div><div class="bni-lbl">Horario</div></button>
   <button class="bni" onclick="goPage('posiciones',this)"><div class="bni-ico">🏆</div><div class="bni-lbl">Tabla</div></button>
-  <button class="bni" onclick="goPage('fotos',this)"><div class="bni-ico">📸</div><div class="bni-lbl">Fotos</div></button>
+  <button class="bni" onclick="goPage('fotos',this)"><div class="bni-ico">📲</div><div class="bni-lbl">Redes</div></button>
   <button class="bni" onclick="goPage('canchas',this)"><div class="bni-ico">📍</div><div class="bni-lbl">Canchas</div></button>
 </nav>
 
 <button class="rfbtn" id="rfbtn" onclick="manualRefresh()">🔄</button>
-<div class="mo" id="modal" onclick="closeMod()"><button class="mx">✕</button><img id="modal-img" src="" alt=""></div>
 
 <script>
 let S={branding:{},divisiones:[],equipos:{},jornadas:[],partidos:[],canchas:[],fotos:[]};
-let curPage='inicio', hDiv=null, hJorn=null;
+let curPage='inicio', hDiv=null;
 const TC=['#1a3a6e','#c0392b','#1a7a3a','#c8a020','#8e44ad','#2980b9','#d35400','#16a085','#2c3e50','#7f8c8d'];
 
 function tCol(n){let h=0;for(let i=0;i<(n||'').length;i++)h=(h*31+n.charCodeAt(i))%TC.length;return TC[h];}
@@ -304,7 +428,6 @@ function avHtml(eq,sz=30){
   return`<span class="eq-av" style="width:${sz}px;height:${sz}px;background:${tCol(eq.nombre)};font-size:${Math.round(sz*.38)}px">${tIni(eq.nombre)}</span>`;
 }
 
-// ── FIX: búsqueda de equipo case-insensitive y sin espacios extra ──
 function eqByName(nombre){
   const norm=n=>(n||'').trim().toLowerCase();
   const key=norm(nombre);
@@ -315,7 +438,6 @@ function eqByName(nombre){
   return{nombre,logo_url:null};
 }
 
-// HTML de un lado del partido con logo grande
 function teamSide(nombre,isWin){
   const eq=eqByName(nombre);
   let avStr;
@@ -327,6 +449,29 @@ function teamSide(nombre,isWin){
     avStr=`<div class="pc-av" style="background:${tCol(nombre)}">${tIni(nombre)}</div>`;
   }
   return`<div class="pc-team">${avStr}<div class="pc-name${isWin?' win':''}">${nombre}</div></div>`;
+}
+
+// ── Helpers para ordenar campos ──
+// Extrae número de un nombre de campo para ordenar: "Ovalo 1" → 1, "Ovalo 2" → 2, "Centenial" → 999
+function campoSortKey(nombre){
+  const m=(nombre||'').match(/(\d+)/);
+  if(m)return parseInt(m[1]);
+  // nombres sin número van al final por orden alfabético
+  return 900 + (nombre||'').charCodeAt(0);
+}
+
+// Convierte hora string "10:00PM" / "22:00" a minutos para ordenar
+function horaToMin(h){
+  if(!h)return 9999;
+  const s=h.trim().toUpperCase();
+  const pm=s.includes('PM');
+  const am=s.includes('AM');
+  const clean=s.replace(/[APM]/g,'').trim();
+  const [hh,mm]=(clean+':00').split(':').map(Number);
+  let total=hh*60+(mm||0);
+  if(pm&&hh!==12)total+=720;
+  if(am&&hh===12)total-=720;
+  return total;
 }
 
 async function loadAll(){
@@ -388,12 +533,10 @@ function applyBrand(){
   const b=S.branding||{};
   const icons=b.icons||{};
 
-  // Colors
   if(b.color1)document.documentElement.style.setProperty('--az',b.color1);
   if(b.color2)document.documentElement.style.setProperty('--az2',b.color2);
   if(b.color3)document.documentElement.style.setProperty('--az3',b.color3);
 
-  // Fonts
   const ft=b.fontTitle||'Barlow Condensed';
   const fb=b.fontBody||'Barlow';
   [ft,fb].filter(f=>!['Barlow Condensed','Barlow'].includes(f)).forEach(f=>{
@@ -402,23 +545,25 @@ function applyBrand(){
   });
   setTimeout(()=>{
     document.body.style.fontFamily=`'${fb}',sans-serif`;
-    document.querySelectorAll('.hdr-tx .nom,.banner-title,.cat-name,.pos-blk-hdr,.campo-blk-hdr,.bnav .bni-lbl,.dpill,.jpill,.liga-name').forEach(el=>el.style.fontFamily=`'${ft}',sans-serif`);
+    document.querySelectorAll('.hdr-tx .nom,.banner-title,.cat-card-name,.pos-blk-hdr,.campo-blk-hdr,.bnav .bni-lbl,.dpill,.liga-name').forEach(el=>el.style.fontFamily=`'${ft}',sans-serif`);
   },400);
 
-  // Logo
   const logo=b.logo||'';
   const hl=document.getElementById('hdr-logo'),hb=document.getElementById('hdr-ball');
-  const cl=document.getElementById('cc-logo'),cb=document.getElementById('cc-ball');
   const ligaIco=icons.liga||b.emoji||'⚽';
-  if(logo){hl.src=logo;hl.style.display='block';hb.style.display='none';cl.src=logo;cl.style.display='block';cb.style.display='none';}
-  else{hl.style.display='none';hb.style.display='block';hb.textContent=ligaIco;cl.style.display='none';cb.style.display='block';cb.textContent=ligaIco;}
+  if(logo){hl.src=logo;hl.style.display='block';hb.style.display='none';}
+  else{hl.style.display='none';hb.style.display='block';hb.textContent=ligaIco;}
 
-  // Nav icons
+  // Hero ball + watermark
+  const hbe=document.getElementById('hero-ball-emoji');
+  if(hbe)hbe.textContent=ligaIco;
+  const wm=document.getElementById('hero-watermark');
+  if(wm){if(logo){wm.src=logo;wm.style.display='block';}else{wm.style.display='none';}}
+
   const navKeys=['inicio','horario','posiciones','fotos','canchas'];
   const navDef=['🏠','📅','🏆','📸','📍'];
   document.querySelectorAll('.bni .bni-ico').forEach((el,i)=>el.textContent=icons[navKeys[i]]||navDef[i]);
 
-  // Header text — todos los campos editables
   const set=(id,v)=>{const e=document.getElementById(id);if(e&&v!==undefined&&v!=='')e.textContent=v;};
   const seta=(id,attr,v)=>{const e=document.getElementById(id);if(e&&v)e[attr]=v;};
 
@@ -427,12 +572,10 @@ function applyBrand(){
   set('hdr-nom',b.nombre||'ANTA');
   document.getElementById('hdr-yr').innerHTML=(b.temporada||'2026')+'<span class="ldot"></span>';
 
-  // Hero
-  if(b.heroLabel!==undefined)set('cc-label',b.heroLabel||'Liga');
-  set('cc-name',(b.heroLabel||'Liga')+' '+(b.nombre||'ANTA'));
+  if(b.heroLabel!==undefined)set('cc-label',(b.heroLabel||'Liga')+' ');
+  set('cc-name',b.nombre||'ANTA');
   if(b.subtitulo)set('cc-sub',b.subtitulo);
 
-  // Contacto
   if(b.tel){seta('ci-tel','href','tel:'+(b.tel||'').replace(/\D/g,''));set('ci-tel-v',b.tel);}
   if(b.web){seta('ci-web','href',b.web);set('ci-web-v',(b.web||'').replace('https://','').replace('http://',''));}
 }
@@ -446,7 +589,7 @@ function goPage(name,btn){
   document.getElementById('scroll').scrollTop=0;
   render();
 }
-function goHorarioCat(div){hDiv=div;hJorn=null;goPage('horario',document.querySelectorAll('.bni')[1]);}
+function goHorarioCat(div){hDiv=div;goPage('horario',document.querySelectorAll('.bni')[1]);}
 function goPosCat(div){
   goPage('posiciones',document.querySelectorAll('.bni')[2]);
   setTimeout(()=>{const el=document.getElementById('pos-div-'+CSS.escape(div));if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);
@@ -461,94 +604,117 @@ function render(){
 
 // ── INICIO ──
 function rInicio(){
-  const b=S.branding||{};
-  const icons=b.icons||{};
+  // Stats
+  const totalEqs=Object.values(S.equipos).reduce((a,v)=>a+v.length,0);
+  const el=e=>document.getElementById(e);
+  el('stat-divs').textContent=S.divisiones.length||'–';
+  el('stat-teams').textContent=totalEqs||'–';
+  el('stat-games').textContent=S.partidos.length||'–';
 
-  // ── FIX: Canchas dinámicas desde S.canchas ──
-  const cr=document.getElementById('campos-row');
-  if(S.canchas&&S.canchas.length){
-    cr.innerHTML=S.canchas.map(c=>{
-      const logo=c.logo_url||'';
-      let icoStr;
-      if(logo.startsWith('data:')||logo.startsWith('http')){
-        icoStr=`<img src="${logo}" style="width:20px;height:20px;object-fit:cover;border-radius:3px" onerror="this.outerHTML='🏟️'">`;
-      } else {
-        icoStr=logo||['🏟️','⛳','📍'][0];
-      }
-      return`<a class="campo-btn-card" href="${c.mapa_url||'#'}" target="_blank">
-        <div class="campo-btn-top"><span class="cbt-ico">${icoStr}</span><span class="cbt-name">${c.nombre}</span></div>
-        <div class="campo-btn-bot">
-          <div class="campo-btn-addr">${c.direccion||''}</div>
-          ${c.mapa_url?'<div class="campo-map-lnk">Ver en Mapa →</div>':''}
+  // Próximos partidos (no jugados), máx 3 partidos de la jornada más reciente por división
+  const proximos=buildProximos();
+  const pc=document.getElementById('ini-proximos');
+  const sec=document.getElementById('ini-proximos-sec');
+  if(proximos.length){
+    sec.style.display='';
+    pc.innerHTML=proximos.map(g=>`
+      <div class="ini-next-card">
+        <div class="ini-next-hdr">
+          <div class="ini-next-hdr-div">${g.div}</div>
+          <div class="ini-next-hdr-fecha">${g.fecha}</div>
         </div>
-      </a>`;
-    }).join('');
-  } else {
-    // Fallback a los valores hardcoded de branding
-    cr.innerHTML=`
-      <a class="campo-btn-card" href="${b.indoorMap||'#'}" target="_blank">
-        <div class="campo-btn-top"><span class="cbt-ico">${icons.indoor||'🏟️'}</span><span class="cbt-name">Indoor</span></div>
-        <div class="campo-btn-bot"><div class="campo-btn-addr">${b.indoorDir||'3570 Galaxy Park Pl, West Jordan, UT 84088'}</div><div class="campo-map-lnk">Ver en Mapa →</div></div>
-      </a>
-      <a class="campo-btn-card" href="${b.outdoorMap||'#'}" target="_blank">
-        <div class="campo-btn-top"><span class="cbt-ico">${icons.outdoor||'⛳'}</span><span class="cbt-name">Outdoor</span></div>
-        <div class="campo-btn-bot"><div class="campo-btn-addr">${b.outdoorDir||'5415 W 3100 S, West Valley City, UT 84120'}</div><div class="campo-map-lnk">Ver en Mapa →</div></div>
-      </a>`;
+        ${g.parts.slice(0,3).map(p=>{
+          const eq1=eqByName(p.local);
+          const eq2=eqByName(p.visitante);
+          const av1=eq1.logo_url?`<div class="ini-np-av" style="background:#f0f0f0"><img src="${eq1.logo_url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.background='${tCol(p.local)}';this.parentElement.textContent='${tIni(p.local)}'"></div>`:`<div class="ini-np-av" style="background:${tCol(p.local)}">${tIni(p.local)}</div>`;
+          const av2=eq2.logo_url?`<div class="ini-np-av" style="background:#f0f0f0"><img src="${eq2.logo_url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.background='${tCol(p.visitante)}';this.parentElement.textContent='${tIni(p.visitante)}'"></div>`:`<div class="ini-np-av" style="background:${tCol(p.visitante)}">${tIni(p.visitante)}</div>`;
+          return`<div class="ini-next-partido">
+            <div class="ini-np-team">${av1}<div class="ini-np-name">${p.local}</div></div>
+            <div class="ini-np-mid"><div class="ini-np-hora">${p.hora||'--:--'}</div><div class="ini-np-vs">VS</div></div>
+            <div class="ini-np-team right"><div class="ini-np-name" style="text-align:right">${p.visitante}</div>${av2}</div>
+          </div>`;
+        }).join('')}
+      </div>`).join('');
+  }else{
+    sec.style.display='none';
   }
 
-  // Categorías
+  // Categorías — cards
   const divs=S.divisiones||[];
-  const cl=document.getElementById('cat-list');
-  if(!divs.length){cl.innerHTML='<div style="padding:16px;text-align:center;color:var(--dm);font-size:13px">Sin categorías</div>';return;}
+  const catEl=document.getElementById('cat-list');
   const colors=['#1a3a6e','#c0392b','#1a7a3a','#c8a020','#8e44ad','#2980b9'];
-  cl.innerHTML=divs.map((d,i)=>{
+  if(!divs.length){catEl.innerHTML='<div style="padding:16px;text-align:center;color:var(--dm);font-size:13px">Sin categorías</div>';return;}
+  catEl.innerHTML=divs.map((d,i)=>{
     const eqCount=(S.equipos[d]||[]).length;
     const partPend=S.partidos.filter(p=>p.division===d&&!p.jugado).length;
-    return`<div class="cat-row" style="border-left-color:${colors[i%colors.length]}" onclick="goHorarioCat('${esc(d)}')">
-      <div class="cat-row-l"><div class="cat-name">${d}</div>
-      <div class="cat-meta">${eqCount} equipos${partPend>0?' · '+partPend+' partidos próximos':''}</div></div>
-      <div class="cat-arr">›</div>
+    const col=colors[i%colors.length];
+    return`<div class="cat-card" onclick="goHorarioCat('${esc(d)}')">
+      <div class="cat-card-stripe" style="background:${col}"></div>
+      <div class="cat-card-body">
+        <div class="cat-card-name" style="color:${col}">${d}</div>
+        <div class="cat-card-meta">${eqCount} equipos${partPend>0?' · '+partPend+' próximos':''}</div>
+      </div>
+      <div class="cat-card-arr">›</div>
     </div>`;
   }).join('');
 }
 
-// ── HORARIO ──
-function setHDiv(d){hDiv=d;hJorn=null;rHorario();}
-function setHJorn(id){hJorn=id;rHorario();}
+// Construye grupos de próximos partidos por división (jornada más reciente con pendientes)
+function buildProximos(){
+  const groups=[];
+  S.divisiones.forEach(div=>{
+    const pending=S.partidos.filter(p=>p.division===div&&!p.jugado);
+    if(!pending.length)return;
+    // Encontrar la jornada de menor número con partidos pendientes
+    const jIds=[...new Set(pending.map(p=>p.jornada_id))];
+    const jorns=S.jornadas.filter(j=>jIds.includes(j.id)).sort((a,b)=>a.numero-b.numero);
+    if(!jorns.length)return;
+    const jorn=jorns[0];
+    const parts=pending.filter(p=>p.jornada_id===jorn.id).sort((a,b)=>horaToMin(a.hora)-horaToMin(b.hora));
+    groups.push({div,fecha:jorn.fecha||'',parts});
+  });
+  return groups;
+}
+
+// ── HORARIO — FIX: solo jornada más reciente, campos ordenados, horas ordenadas ──
+function setHDiv(d){hDiv=d;rHorario();}
 
 function rHorario(){
   const divs=S.divisiones||[];
   if(!divs.length){
     document.getElementById('hor-divs').innerHTML='';
-    document.getElementById('hor-jorns').innerHTML='';
+    document.getElementById('jorn-label-wrap').innerHTML='';
     document.getElementById('hor-cont').innerHTML='<div class="empty"><div class="eico">📅</div><p>Sin categorías</p></div>';
     return;
   }
   if(!hDiv||!divs.includes(hDiv))hDiv=divs[0];
 
+  // Pills de división
   document.getElementById('hor-divs').innerHTML=divs.map(d=>
     `<button class="dpill ${d===hDiv?'on':''}" onclick="setHDiv('${esc(d)}')">${d}</button>`
   ).join('');
 
+  // Partidos de esta división
   const partsDiv=S.partidos.filter(p=>p.division===hDiv);
   const jIds=[...new Set(partsDiv.map(p=>p.jornada_id))];
   const jorns=S.jornadas.filter(j=>jIds.includes(j.id)).sort((a,b)=>a.numero-b.numero);
 
   if(!jorns.length){
-    document.getElementById('hor-jorns').innerHTML='';
+    document.getElementById('jorn-label-wrap').innerHTML='';
     document.getElementById('hor-cont').innerHTML='<div class="empty"><div class="eico">📅</div><p>Sin partidos en esta categoría</p></div>';
     return;
   }
-  if(!hJorn||!jorns.find(j=>j.id===hJorn))hJorn=jorns[0].id;
 
-  document.getElementById('hor-jorns').innerHTML=jorns.map(j=>
-    `<button class="jpill ${j.id===hJorn?'on':''}" onclick="setHJorn(${j.id})">J${j.numero} · ${(j.fecha||'').split(' ').slice(0,2).join(' ')}</button>`
-  ).join('');
+  // FIX #2: Solo mostrar la jornada más reciente (último número)
+  const jornada=jorns[jorns.length-1];
+  const hJorn=jornada.id;
 
-  const jornada=jorns.find(j=>j.id===hJorn);
+  // Label de jornada — sin scroll de pestañas
+  document.getElementById('jorn-label-wrap').innerHTML=
+    `<div class="jorn-label-txt">J${jornada.numero} · ${(jornada.fecha||'').toUpperCase()}</div>`;
+
   const parts=S.partidos
-    .filter(p=>p.jornada_id===hJorn&&p.division===hDiv)
-    .sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));
+    .filter(p=>p.jornada_id===hJorn&&p.division===hDiv);
 
   if(!parts.length){
     document.getElementById('hor-cont').innerHTML='<div class="empty"><div class="eico">📅</div><p>Sin partidos en esta jornada</p></div>';
@@ -557,10 +723,24 @@ function rHorario(){
 
   let html=`<div class="hor-fecha">${(jornada.fecha||'').toUpperCase()}</div>`;
 
+  // FIX #1a: Agrupar por campo y ordenar campos por nombre numérico
   const campos={};
   parts.forEach(p=>{const c=p.campo||'Campo';if(!campos[c])campos[c]=[];campos[c].push(p);});
 
-  Object.entries(campos).forEach(([campo,ps])=>{
+  // Ordenar campos: "Ovalo 1" < "Ovalo 2" < "Centenial" etc.
+  const camposOrdenados=Object.keys(campos).sort((a,b)=>{
+    // Si ambos son del mismo prefijo con número, ordenar por número
+    const aBase=(a.match(/^[^0-9]+/)||[''])[0].trim().toLowerCase();
+    const bBase=(b.match(/^[^0-9]+/)||[''])[0].trim().toLowerCase();
+    if(aBase===bBase){
+      return campoSortKey(a)-campoSortKey(b);
+    }
+    return a.localeCompare(b,'es');
+  });
+
+  camposOrdenados.forEach(campo=>{
+    // FIX #1b: Ordenar partidos por hora dentro de cada campo
+    const ps=campos[campo].sort((a,b)=>horaToMin(a.hora)-horaToMin(b.hora));
     html+=`<div class="campo-blk"><div class="campo-blk-hdr">📍 ${campo}</div>`;
     ps.forEach(p=>{
       const lW=p.jugado&&p.goles_local>p.goles_visitante;
@@ -605,15 +785,53 @@ function rPos(){
   document.getElementById('pos-cont').innerHTML=html||'<div class="empty"><div class="eico">🏆</div><p>Sin equipos registrados</p></div>';
 }
 
-// ── FOTOS ──
+// ── REDES SOCIALES ──
 function rFotos(){
-  const f=S.fotos||[];
-  const c=document.getElementById('foto-cont');
-  if(!f.length){c.innerHTML='<div style="grid-column:span 2" class="empty"><div class="eico">📸</div><p>Sin fotos aún</p></div>';return;}
-  c.innerHTML=f.map(x=>x.url
-    ?`<div class="foto-item ${x.tipo==='grande'?'grande':''}" onclick="openMod('${x.url}')"><img src="${x.url}" loading="lazy" onerror="this.style.display='none'"><div class="foto-lbl">${x.titulo||''}</div></div>`
-    :`<div class="foto-item ${x.tipo==='grande'?'grande':''}"><div class="foto-ph">📷<span style="font-size:12px;font-family:'Barlow Condensed'">${x.titulo||''}</span></div></div>`
-  ).join('');
+  // Lee links de branding o usa defaults
+  const b=S.branding||{};
+  const redes=[
+    {
+      id:'instagram',
+      platform:'Instagram',
+      handle:b.instagram||'@ligaanta',
+      url:b.instagramUrl||(b.instagram?'https://instagram.com/'+(b.instagram||'').replace('@',''):'https://instagram.com/ligaanta'),
+      desc:'Fotos y momentos de cada jornada',
+      cls:'instagram',
+      svg:`<svg class="red-svg" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`
+    },
+    {
+      id:'tiktok',
+      platform:'TikTok',
+      handle:b.tiktok||'@ligaanta',
+      url:b.tiktokUrl||(b.tiktok?'https://tiktok.com/'+(b.tiktok||'').replace('@','@'):'https://tiktok.com/@ligaanta'),
+      desc:'Videos de goles y jugadas épicas',
+      cls:'tiktok',
+      svg:`<svg class="red-svg" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.78a4.85 4.85 0 01-1.01-.09z"/></svg>`
+    },
+    {
+      id:'facebook',
+      platform:'Facebook',
+      handle:b.facebook||'Liga ANTA',
+      url:b.facebookUrl||'https://facebook.com/ligaanta',
+      desc:'Eventos, resultados y comunidad',
+      cls:'facebook',
+      svg:`<svg class="red-svg" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`
+    }
+  ];
+
+  const c=document.getElementById('redes-cont');
+  c.innerHTML=redes.map(r=>`
+    <a href="${r.url}" target="_blank" class="red-card ${r.cls}">
+      <div class="red-inner">
+        <div class="red-icon-wrap">${r.svg}</div>
+        <div class="red-info">
+          <div class="red-platform">${r.platform}</div>
+          <div class="red-handle">${r.handle}</div>
+          <div class="red-desc">${r.desc}</div>
+        </div>
+        <div class="red-arrow">›</div>
+      </div>
+    </a>`).join('');
 }
 
 // ── CANCHAS ──
@@ -635,8 +853,6 @@ function rCanchas(){
     :'<div class="empty"><div class="eico">📍</div><p>Sin canchas registradas</p></div>';
 }
 
-function openMod(u){document.getElementById('modal-img').src=u;document.getElementById('modal').classList.add('open');}
-function closeMod(){document.getElementById('modal').classList.remove('open');}
 function esc(s){return(s||'').replace(/'/g,"\\'");}
 
 init();
